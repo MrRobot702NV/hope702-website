@@ -6,6 +6,9 @@
   <title>HOPE 702 — Las Vegas Homeless Resource SMS</title>
   <meta name="description" content="Text HOPE to get the nearest cooling centers, shelters, food, water, and pet resources in Las Vegas. Free, instant, no app needed." />
 
+  <!-- Stripe -->
+  <script src="https://js.stripe.com/v3/"></script>
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1081,6 +1084,165 @@
       transform: translateY(-1px);
     }
 
+    .custom-amount-wrap {
+      display: none;
+      margin-bottom: 16px;
+    }
+    .custom-amount-wrap input {
+      width: 100%;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 600;
+      outline: none;
+    }
+    .custom-amount-wrap input::placeholder { color: rgba(255,255,255,0.35); }
+    .custom-amount-wrap input:focus { border-color: var(--gold); }
+
+    /* ── Donation modal ───────────────────────────────────────────────────── */
+    .dm-overlay {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,0.65);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+    .dm-overlay.open { opacity: 1; visibility: visible; }
+
+    .dm-box {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(12px);
+      transition: transform 0.2s;
+    }
+    .dm-overlay.open .dm-box { transform: translateY(0); }
+
+    .dm-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none; cursor: pointer;
+      color: var(--gray-500); font-size: 1.4rem; line-height: 1;
+      padding: 4px 8px; border-radius: 6px;
+    }
+    .dm-close:hover { background: var(--gray-200); color: var(--text); }
+
+    .dm-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .dm-logo span { color: var(--gold); }
+
+    .dm-heading {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .dm-sub {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      margin-bottom: 24px;
+    }
+
+    .dm-amounts {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .dm-amount {
+      flex: 1 1 calc(25% - 8px);
+      min-width: 60px;
+      padding: 10px 8px;
+      border: 2px solid var(--gray-200);
+      border-radius: 8px;
+      background: var(--white);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .dm-amount:hover { border-color: var(--gold); color: var(--navy); }
+    .dm-amount.selected {
+      background: var(--gold); border-color: var(--gold); color: var(--navy);
+    }
+    .dm-amount.custom-btn { flex: 1 1 100%; }
+
+    .dm-custom-wrap {
+      display: none;
+      margin-bottom: 16px;
+    }
+    .dm-custom-wrap input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      outline: none;
+    }
+    .dm-custom-wrap input:focus { border-color: var(--gold); }
+
+    .dm-card-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    #dm-card-element {
+      padding: 12px 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: border-color 0.15s;
+    }
+    #dm-card-element.focused { border-color: var(--gold); }
+
+    #dm-card-errors {
+      font-size: 0.85rem;
+      color: #e53e3e;
+      min-height: 20px;
+      margin-bottom: 16px;
+    }
+
+    #dm-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+    #dm-submit:hover:not(:disabled) { background: var(--gold-light); transform: translateY(-1px); }
+    #dm-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .dm-secure {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      margin-top: 14px;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
     .contact-form {
       display: flex;
       flex-direction: column;
@@ -1712,17 +1874,19 @@
         <div class="donate-block">
           <h3>Make a Donation</h3>
           <p>
-            $5 covers 500 text responses. $25 prints a pack of 100 cards for outreach workers. $100 funds a month of a new city expansion.
+            $5 = one case of water that can reach dozens of people in need. 100% of donations go toward funding cooling water stations across Las Vegas and expanding HOPE to new cities.
           </p>
           <div class="donate-amounts">
-            <button class="donate-amount selected" onclick="selectAmount(this)">$5</button>
-            <button class="donate-amount" onclick="selectAmount(this)">$15</button>
-            <button class="donate-amount" onclick="selectAmount(this)">$25</button>
-            <button class="donate-amount" onclick="selectAmount(this)">$50</button>
-            <button class="donate-amount" onclick="selectAmount(this)">$100</button>
-            <button class="donate-amount" onclick="selectAmount(this)">Other</button>
+            <button class="donate-amount selected" onclick="selectAmount(this, 5)">$5</button>
+            <button class="donate-amount" onclick="selectAmount(this, 15)">$15</button>
+            <button class="donate-amount" onclick="selectAmount(this, 25)">$25</button>
+            <button class="donate-amount" onclick="selectAmount(this, 50)">$50</button>
+            <button class="donate-amount" onclick="selectAmount(this, 0)">Custom</button>
           </div>
-          <button class="donate-btn">
+          <div class="custom-amount-wrap" id="section-custom-wrap">
+            <input type="number" id="section-custom-input" min="1" placeholder="Enter amount ($)" />
+          </div>
+          <button class="donate-btn" onclick="openDonateModal()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
             Donate Now
           </button>
@@ -1768,6 +1932,40 @@
       </div>
     </div>
   </section>
+
+  <!-- ── Donation modal ──────────────────────────────────────────────────── -->
+  <div id="dm-overlay" class="dm-overlay" role="dialog" aria-modal="true" aria-labelledby="dm-heading">
+    <div class="dm-box">
+      <button class="dm-close" onclick="closeDonateModal()" aria-label="Close">&times;</button>
+      <div class="dm-logo">HOPE<span>702</span></div>
+      <div class="dm-heading" id="dm-heading">Make a Donation</div>
+      <div class="dm-sub">100% goes to SMS costs, cards & city expansion.</div>
+
+      <div class="dm-amounts">
+        <button class="dm-amount selected" onclick="dmSelectAmount(this, 5)">$5</button>
+        <button class="dm-amount" onclick="dmSelectAmount(this, 15)">$15</button>
+        <button class="dm-amount" onclick="dmSelectAmount(this, 25)">$25</button>
+        <button class="dm-amount" onclick="dmSelectAmount(this, 50)">$50</button>
+        <button class="dm-amount custom-btn" onclick="dmSelectAmount(this, 0)">Custom amount</button>
+      </div>
+
+      <div class="dm-custom-wrap" id="dm-custom-wrap">
+        <input type="number" id="dm-custom-input" min="1" placeholder="$ Enter amount" oninput="dmUpdateButton()" />
+      </div>
+
+      <form id="dm-form" onsubmit="dmSubmit(event)">
+        <div class="dm-card-label">Card details</div>
+        <div id="dm-card-element"></div>
+        <div id="dm-card-errors" role="alert"></div>
+        <button type="submit" id="dm-submit">Donate $5</button>
+      </form>
+
+      <div class="dm-secure">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        Secured by Stripe &nbsp;·&nbsp; Your card is never stored on our servers
+      </div>
+    </div>
+  </div>
 
   <!-- ── Footer ───────────────────────────────────────────────────────────── -->
   <footer>
@@ -1826,10 +2024,162 @@
       a.addEventListener('click', () => navLinks.classList.remove('open'));
     });
 
-    // Donate amount selector
-    function selectAmount(el) {
+    // ── Stripe ──────────────────────────────────────────────────────────────
+    // Replace with your Stripe publishable key (Dashboard → Developers → API keys)
+    const STRIPE_KEY = 'pk_live_51TIaynFkwrju22i5pfGQdCeNRE3ccKu5HKljgjcYRClMMdWWFJ8GRcKUwxDVwEG8HpfQzqFmuDv1F1DSbLDg2Vn500geQBvYxR';
+    // Backend endpoint that creates a PaymentIntent and returns { clientSecret }
+    const PAYMENT_ENDPOINT = '/api/create-payment-intent';
+
+    const stripe = Stripe(STRIPE_KEY);
+    const elements = stripe.elements();
+
+    const cardElement = elements.create('card', {
+      style: {
+        base: {
+          fontFamily: "'Inter', system-ui, sans-serif",
+          fontSize: '16px',
+          color: '#1a1a2e',
+          '::placeholder': { color: '#aaa' },
+        },
+        invalid: { color: '#e53e3e' },
+      },
+    });
+    cardElement.mount('#dm-card-element');
+    cardElement.on('focus',  () => document.getElementById('dm-card-element').classList.add('focused'));
+    cardElement.on('blur',   () => document.getElementById('dm-card-element').classList.remove('focused'));
+    cardElement.on('change', e => {
+      document.getElementById('dm-card-errors').textContent = e.error ? e.error.message : '';
+    });
+
+    // ── Section amount selector (preview on main page) ───────────────────────
+    let sectionAmount = 5;
+    function selectAmount(el, amount) {
       document.querySelectorAll('.donate-amount').forEach(b => b.classList.remove('selected'));
       el.classList.add('selected');
+      sectionAmount = amount;
+      const wrap = document.getElementById('section-custom-wrap');
+      wrap.style.display = amount === 0 ? 'block' : 'none';
+      if (amount !== 0) document.getElementById('section-custom-input').value = '';
+    }
+
+    function openDonateModal() {
+      // Sync selected amount from section into modal
+      const customVal = parseInt(document.getElementById('section-custom-input').value, 10);
+      const amount = sectionAmount === 0 && customVal > 0 ? customVal : sectionAmount;
+      if (amount === 0 || (sectionAmount === 0 && !customVal)) {
+        // Open modal with custom tab active
+        dmSelectAmountByValue(0);
+      } else {
+        dmSelectAmountByValue(amount);
+      }
+      document.getElementById('dm-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDonateModal() {
+      document.getElementById('dm-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Close on overlay backdrop click
+    document.getElementById('dm-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeDonateModal();
+    });
+    // Close on Escape
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDonateModal(); });
+
+    // ── Modal amount selector ────────────────────────────────────────────────
+    let dmAmount = 5;
+
+    function dmSelectAmount(el, amount) {
+      document.querySelectorAll('.dm-amount').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      dmAmount = amount;
+      const wrap = document.getElementById('dm-custom-wrap');
+      wrap.style.display = amount === 0 ? 'block' : 'none';
+      if (amount !== 0) {
+        document.getElementById('dm-custom-input').value = '';
+        document.getElementById('dm-submit').textContent = `Donate $${amount}`;
+      } else {
+        document.getElementById('dm-submit').textContent = 'Donate';
+      }
+    }
+
+    function dmSelectAmountByValue(amount) {
+      const btns = document.querySelectorAll('.dm-amount');
+      const presets = [5, 15, 25, 50];
+      if (presets.includes(amount)) {
+        const idx = presets.indexOf(amount);
+        dmSelectAmount(btns[idx], amount);
+      } else {
+        // custom
+        dmSelectAmount(btns[btns.length - 1], 0);
+        if (amount > 0) {
+          document.getElementById('dm-custom-input').value = amount;
+          document.getElementById('dm-submit').textContent = `Donate $${amount}`;
+          dmAmount = 0; // signals "read from input"
+        }
+      }
+    }
+
+    function dmUpdateButton() {
+      const val = parseInt(document.getElementById('dm-custom-input').value, 10);
+      document.getElementById('dm-submit').textContent = val > 0 ? `Donate $${val}` : 'Donate';
+    }
+
+    function dmGetAmount() {
+      if (dmAmount !== 0) return dmAmount;
+      return parseInt(document.getElementById('dm-custom-input').value, 10) || 0;
+    }
+
+    async function dmSubmit(e) {
+      e.preventDefault();
+      const amount = dmGetAmount();
+      if (!amount || amount < 1) {
+        document.getElementById('dm-card-errors').textContent = 'Please enter a valid donation amount.';
+        return;
+      }
+
+      const btn = document.getElementById('dm-submit');
+      btn.disabled = true;
+      btn.textContent = 'Processing…';
+      document.getElementById('dm-card-errors').textContent = '';
+
+      try {
+        // Ask your backend to create a PaymentIntent for `amount` dollars
+        const res = await fetch(PAYMENT_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: amount * 100, currency: 'usd' }), // Stripe uses cents
+        });
+        const { clientSecret, error: serverError } = await res.json();
+        if (serverError) throw new Error(serverError);
+
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: { card: cardElement },
+        });
+
+        if (error) {
+          document.getElementById('dm-card-errors').textContent = error.message;
+          btn.disabled = false;
+          btn.textContent = `Donate $${amount}`;
+        } else if (paymentIntent.status === 'succeeded') {
+          btn.textContent = '✓ Thank you!';
+          btn.style.background = '#22c55e';
+          setTimeout(() => {
+            closeDonateModal();
+            btn.textContent = `Donate $${amount}`;
+            btn.style.background = '';
+            btn.disabled = false;
+            cardElement.clear();
+          }, 2500);
+        }
+      } catch (err) {
+        document.getElementById('dm-card-errors').textContent =
+          'Something went wrong. Please try again or contact us.';
+        btn.disabled = false;
+        btn.textContent = `Donate $${amount}`;
+      }
     }
 
     // Contact form submit
