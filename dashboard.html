@@ -7,7 +7,6 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -18,7 +17,7 @@
       min-height: 100vh;
     }
 
-    /* ── Login ─────────────────────────────────────────────────────── */
+    /* Login */
     #login-screen {
       display: flex;
       align-items: center;
@@ -101,7 +100,7 @@
       60%{transform:translateX(6px)}
     }
 
-    /* ── Dashboard layout ──────────────────────────────────────────── */
+    /* Dashboard */
     #dashboard { display: none; }
     #dashboard.visible { display: block; }
 
@@ -126,7 +125,6 @@
 
     .dash-body { padding: 24px 28px; }
 
-    /* ── Stat cards ────────────────────────────────────────────────── */
     .stat-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -158,7 +156,6 @@
     .c-green  { color: #22c55e; }
     .c-white  { color: #f1f5f9; }
 
-    /* ── Main grid ─────────────────────────────────────────────────── */
     .main-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -179,7 +176,6 @@
       margin-bottom: 16px;
     }
 
-    /* ── SVG Map ───────────────────────────────────────────────────── */
     .map-wrap { position: relative; }
     .map-tooltip {
       position: absolute;
@@ -198,7 +194,6 @@
     .map-tooltip-zip { font-weight: 700; font-size: 1rem; }
     .map-tooltip-count { font-size: 1.1rem; font-weight: 800; }
 
-    /* ── Legend ────────────────────────────────────────────────────── */
     .legend {
       display: flex;
       gap: 16px;
@@ -218,7 +213,6 @@
       border-radius: 50%;
     }
 
-    /* ── Neighborhood table ────────────────────────────────────────── */
     .table-panel { background: #12121e; border: 1px solid #1e1e30; border-radius: 12px; padding: 20px; }
     table { width: 100%; border-collapse: collapse; }
     thead th {
@@ -246,9 +240,6 @@
     .badge-yellow { background: rgba(234,179,8,0.15);  color: #eab308; }
     .badge-green  { background: rgba(34,197,94,0.15);  color: #22c55e; }
 
-    .bar-label { font-size: 11px; fill: #94a3b8; }
-
-    /* ── Scrollbar ─────────────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #0a0a0f; }
     ::-webkit-scrollbar-thumb { background: #2d2d44; border-radius: 3px; }
@@ -271,17 +262,17 @@
   </div>
 
   <script>
-    document.getElementById('pw-input').addEventListener('keydown', e => {
+    document.getElementById('pw-input').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') tryLogin();
     });
 
     function tryLogin() {
-      const val = document.getElementById('pw-input').value;
-      const inp = document.getElementById('pw-input');
-      const err = document.getElementById('login-error');
+      var val = document.getElementById('pw-input').value;
+      var inp = document.getElementById('pw-input');
+      var err = document.getElementById('login-error');
       if (val === 'hope702miguel') {
         document.getElementById('login-screen').style.display = 'none';
-        const dash = document.getElementById('dashboard');
+        var dash = document.getElementById('dashboard');
         dash.classList.add('visible');
         if (!dash._mounted) {
           dash._mounted = true;
@@ -292,18 +283,25 @@
       } else {
         inp.classList.add('error');
         err.textContent = 'Incorrect password.';
-        setTimeout(() => inp.classList.remove('error'), 400);
+        setTimeout(function() { inp.classList.remove('error'); }, 400);
       }
     }
   </script>
 
-  <script type="text/babel">
-    const {
-      BarChart, Bar, XAxis, YAxis, CartesianGrid,
-      Tooltip: RechartTooltip, Cell, ResponsiveContainer
-    } = Recharts;
+  <script>
+    var ce = React.createElement;
 
-    const ZIP_DATA = [
+    var RC = Recharts;
+    var BarChart = RC.BarChart;
+    var Bar = RC.Bar;
+    var XAxis = RC.XAxis;
+    var YAxis = RC.YAxis;
+    var CartesianGrid = RC.CartesianGrid;
+    var RechartTooltip = RC.Tooltip;
+    var Cell = RC.Cell;
+    var ResponsiveContainer = RC.ResponsiveContainer;
+
+    var ZIP_DATA = [
       { zip: '89106', neighborhood: 'Historic Westside', count: 52 },
       { zip: '89101', neighborhood: 'Downtown',          count: 47 },
       { zip: '89109', neighborhood: 'The Strip Area',    count: 41 },
@@ -316,11 +314,10 @@
       { zip: '89110', neighborhood: 'East LV',           count: 18 },
       { zip: '89115', neighborhood: 'North Nellis',      count: 14 },
       { zip: '89146', neighborhood: 'Spring Valley',     count: 12 },
-      { zip: '89128', neighborhood: 'Summerlin',         count:  9 },
+      { zip: '89128', neighborhood: 'Summerlin',         count:  9 }
     ];
 
-    // Approximate SVG positions (500×380 canvas)
-    const MAP_POSITIONS = {
+    var MAP_POSITIONS = {
       '89101': { x: 298, y: 195 },
       '89106': { x: 253, y: 172 },
       '89109': { x: 258, y: 248 },
@@ -333,7 +330,7 @@
       '89110': { x: 452, y: 232 },
       '89115': { x: 420, y: 108 },
       '89146': { x: 128, y: 242 },
-      '89128': { x:  55, y: 165 },
+      '89128': { x:  55, y: 165 }
     };
 
     function urgency(count) {
@@ -343,244 +340,232 @@
       return               { level: 'Low',      color: '#22c55e', badge: 'badge-green',  cls: 'c-green'  };
     }
 
+    function CustomTooltip(props) {
+      var active = props.active;
+      var payload = props.payload;
+      if (!active || !payload || !payload.length) return null;
+      var d = payload[0].payload;
+      var u = urgency(d.count);
+      return ce('div', { style: { background:'#1e1e30', border:'1px solid #2d2d44', borderRadius:8, padding:'10px 14px' } },
+        ce('div', { style: { color:'#e2e8f0', fontWeight:700 } }, d.neighborhood),
+        ce('div', { style: { color:'#64748b', fontSize:'0.78rem' } }, d.zip),
+        ce('div', { style: { color:u.color, fontSize:'1.2rem', fontWeight:800, marginTop:4 } }, d.count + ' requests'),
+        ce('div', { style: { color:u.color, fontSize:'0.72rem', textTransform:'uppercase', letterSpacing:1 } }, u.level)
+      );
+    }
+
     function Dashboard() {
-      const [hovered, setHovered] = React.useState(null);
-      const [tooltipPos, setTooltipPos] = React.useState({ x: 0, y: 0 });
-      const [selected, setSelected] = React.useState(null);
-      const mapRef = React.useRef(null);
+      var hoverState   = React.useState(null);
+      var hovered      = hoverState[0];
+      var setHovered   = hoverState[1];
 
-      const total     = ZIP_DATA.reduce((s, d) => s + d.count, 0);
-      const critical  = ZIP_DATA.filter(d => d.count >= 45).length;
-      const topZip    = ZIP_DATA[0];
-      const now       = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      var tipPosState  = React.useState({ x: 0, y: 0 });
+      var tooltipPos   = tipPosState[0];
+      var setTooltipPos = tipPosState[1];
 
-      const sortedBar = [...ZIP_DATA].sort((a, b) => b.count - a.count);
+      var selState     = React.useState(null);
+      var selected     = selState[0];
+      var setSelected  = selState[1];
+
+      var mapRef = React.useRef(null);
+
+      var total    = ZIP_DATA.reduce(function(s, d) { return s + d.count; }, 0);
+      var critical = ZIP_DATA.filter(function(d) { return d.count >= 45; }).length;
+      var topZip   = ZIP_DATA[0];
+      var now      = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      var sortedBar = ZIP_DATA.slice().sort(function(a, b) { return b.count - a.count; });
 
       function handleMapHover(e, d) {
         if (!mapRef.current) return;
-        const rect = mapRef.current.getBoundingClientRect();
+        var rect = mapRef.current.getBoundingClientRect();
         setHovered(d);
         setTooltipPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
       }
 
-      const CustomTooltip = ({ active, payload }) => {
-        if (!active || !payload?.length) return null;
-        const d = payload[0].payload;
-        const u = urgency(d.count);
-        return (
-          <div style={{ background:'#1e1e30', border:'1px solid #2d2d44', borderRadius:8, padding:'10px 14px' }}>
-            <div style={{ color:'#e2e8f0', fontWeight:700 }}>{d.neighborhood}</div>
-            <div style={{ color:'#64748b', fontSize:'0.78rem' }}>{d.zip}</div>
-            <div style={{ color: u.color, fontSize:'1.2rem', fontWeight:800, marginTop:4 }}>{d.count} requests</div>
-            <div style={{ color: u.color, fontSize:'0.72rem', textTransform:'uppercase', letterSpacing:1 }}>{u.level}</div>
-          </div>
+      // ── Header ─────────────────────────────────────────────────────────────
+      var header = ce('div', { className: 'dash-header' },
+        ce('div', null,
+          ce('div', { className: 'dash-logo' }, 'HOPE 702'),
+          ce('div', { className: 'dash-title' }, 'Demand Dashboard \u2014 Las Vegas ZIP Code Analysis')
+        ),
+        ce('div', { className: 'dash-meta' },
+          ce('div', null, 'Last updated: ' + now),
+          ce('div', null, 'Source: SMS request logs \u00b7 zip_requests.csv')
+        )
+      );
+
+      // ── Stat cards ─────────────────────────────────────────────────────────
+      var statRow = ce('div', { className: 'stat-row' },
+        ce('div', { className: 'stat-card' },
+          ce('div', { className: 'stat-label' }, 'Total Requests'),
+          ce('div', { className: 'stat-value c-white' }, String(total)),
+          ce('div', { className: 'stat-sub' }, 'across ' + ZIP_DATA.length + ' ZIP codes')
+        ),
+        ce('div', { className: 'stat-card' },
+          ce('div', { className: 'stat-label' }, 'Critical Zones'),
+          ce('div', { className: 'stat-value c-red' }, String(critical)),
+          ce('div', { className: 'stat-sub' }, '45+ requests (\u226545)')
+        ),
+        ce('div', { className: 'stat-card' },
+          ce('div', { className: 'stat-label' }, 'Highest Demand'),
+          ce('div', { className: 'stat-value c-orange' }, topZip.zip),
+          ce('div', { className: 'stat-sub' }, topZip.neighborhood + ' \u00b7 ' + topZip.count + ' requests')
+        ),
+        ce('div', { className: 'stat-card' },
+          ce('div', { className: 'stat-label' }, 'Avg per ZIP'),
+          ce('div', { className: 'stat-value c-yellow' }, (total / ZIP_DATA.length).toFixed(1)),
+          ce('div', { className: 'stat-sub' }, 'requests per area')
+        )
+      );
+
+      // ── SVG map circles ────────────────────────────────────────────────────
+      var mapCircles = ZIP_DATA.map(function(d) {
+        var pos  = MAP_POSITIONS[d.zip];
+        var u    = urgency(d.count);
+        var isHov = hovered && hovered.zip === d.zip;
+        var isSel = selected && selected.zip === d.zip;
+        var r    = 6 + Math.sqrt(d.count) * 1.4;
+        var children = [];
+        if (isHov || isSel) {
+          children.push(ce('circle', { key: 'ring', cx: pos.x, cy: pos.y, r: r + 6,
+            fill: 'none', stroke: u.color, strokeWidth: 1.5, opacity: 0.4 }));
+        }
+        children.push(ce('circle', { key: 'dot', cx: pos.x, cy: pos.y, r: r,
+          fill: u.color, opacity: (isHov || isSel) ? 1 : 0.75,
+          stroke: (isHov || isSel) ? '#fff' : 'none', strokeWidth: 1.5 }));
+        children.push(ce('text', { key: 'cnt', x: pos.x, y: pos.y + 1,
+          fontSize: 8, fill: '#000', textAnchor: 'middle', dominantBaseline: 'middle',
+          fontWeight: 700, style: { pointerEvents: 'none' } }, String(d.count)));
+        children.push(ce('text', { key: 'zip', x: pos.x, y: pos.y + r + 11,
+          fontSize: 8.5, fill: '#94a3b8', textAnchor: 'middle',
+          style: { pointerEvents: 'none' } }, d.zip));
+        return ce('g', {
+          key: d.zip,
+          style: { cursor: 'pointer' },
+          onMouseMove: function(e) { handleMapHover(e, d); },
+          onMouseLeave: function() { setHovered(null); },
+          onClick: function() { setSelected(isSel ? null : d); }
+        }, children);
+      });
+
+      // ── SVG ────────────────────────────────────────────────────────────────
+      var vGridLines = [100,200,300,400].map(function(x) {
+        return ce('line', { key: 'v'+x, x1:x, y1:0, x2:x, y2:380, stroke:'#1a1a2e', strokeWidth:1 });
+      });
+      var hGridLines = [76,152,228,304].map(function(y) {
+        return ce('line', { key: 'h'+y, x1:0, y1:y, x2:500, y2:y, stroke:'#1a1a2e', strokeWidth:1 });
+      });
+
+      var svgEl = ce('svg', { viewBox: '0 0 500 380', width: '100%', style: { display: 'block' } },
+        ce('rect', { width: 500, height: 380, fill: '#0d0d1a', rx: 8 }),
+        vGridLines,
+        hGridLines,
+        ce('text', { x: 480, y: 22, fontSize: 11, fill: '#2d2d44', textAnchor: 'middle' }, 'N'),
+        ce('line', { x1: 480, y1: 26, x2: 480, y2: 34, stroke: '#2d2d44', strokeWidth: 1.5 }),
+        ce('text', { x: 258, y: 340, fontSize: 9, fill: '#1e2a44', textAnchor: 'middle', fontStyle: 'italic' }, 'The Strip'),
+        mapCircles
+      );
+
+      // ── Hover tooltip ──────────────────────────────────────────────────────
+      var mapTooltip = hovered ? ce('div', {
+        className: 'map-tooltip',
+        style: { left: tooltipPos.x, top: tooltipPos.y }
+      },
+        ce('div', { className: 'map-tooltip-zip', style: { color: urgency(hovered.count).color } }, hovered.zip),
+        ce('div', { style: { color: '#cbd5e1' } }, hovered.neighborhood),
+        ce('div', { className: 'map-tooltip-count', style: { color: urgency(hovered.count).color } }, hovered.count + ' requests'),
+        ce('div', { style: { color: '#64748b', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: 1 } }, urgency(hovered.count).level)
+      ) : null;
+
+      // ── Legend ─────────────────────────────────────────────────────────────
+      var legendItems = [
+        ['#ef4444','Critical (45+)'],
+        ['#f97316','High (30\u201344)'],
+        ['#eab308','Moderate (20\u201329)'],
+        ['#22c55e','Low (<20)']
+      ].map(function(pair) {
+        return ce('div', { key: pair[0], className: 'legend-item' },
+          ce('div', { className: 'legend-dot', style: { background: pair[0] } }),
+          pair[1]
         );
-      };
+      });
 
-      return (
-        <div>
-          {/* Header */}
-          <div className="dash-header">
-            <div>
-              <div className="dash-logo">HOPE 702</div>
-              <div className="dash-title">Demand Dashboard — Las Vegas ZIP Code Analysis</div>
-            </div>
-            <div className="dash-meta">
-              <div>Last updated: {now}</div>
-              <div>Source: SMS request logs · zip_requests.csv</div>
-            </div>
-          </div>
+      // ── Map panel ─────────────────────────────────────────────────────────
+      var mapPanel = ce('div', { className: 'panel' },
+        ce('div', { className: 'panel-title' }, 'Geographic Distribution'),
+        ce('div', { className: 'map-wrap', ref: mapRef },
+          svgEl,
+          mapTooltip
+        ),
+        ce('div', { className: 'legend' }, legendItems)
+      );
 
-          <div className="dash-body">
-            {/* Stat cards */}
-            <div className="stat-row">
-              <div className="stat-card">
-                <div className="stat-label">Total Requests</div>
-                <div className="stat-value c-white">{total}</div>
-                <div className="stat-sub">across {ZIP_DATA.length} ZIP codes</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-label">Critical Zones</div>
-                <div className="stat-value c-red">{critical}</div>
-                <div className="stat-sub">45+ requests (≥45)</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-label">Highest Demand</div>
-                <div className="stat-value c-orange">{topZip.zip}</div>
-                <div className="stat-sub">{topZip.neighborhood} · {topZip.count} requests</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-label">Avg per ZIP</div>
-                <div className="stat-value c-yellow">{(total / ZIP_DATA.length).toFixed(1)}</div>
-                <div className="stat-sub">requests per area</div>
-              </div>
-            </div>
+      // ── Bar chart ─────────────────────────────────────────────────────────
+      var barCells = sortedBar.map(function(d) {
+        return ce(Cell, { key: d.zip, fill: urgency(d.count).color, fillOpacity: 0.85 });
+      });
 
-            {/* Map + Chart */}
-            <div className="main-grid">
+      var chartPanel = ce('div', { className: 'panel' },
+        ce('div', { className: 'panel-title' }, 'Requests by ZIP Code'),
+        ce(ResponsiveContainer, { width: '100%', height: 340 },
+          ce(BarChart, { data: sortedBar, layout: 'vertical', margin: { top:0, right:40, bottom:0, left:30 } },
+            ce(CartesianGrid, { strokeDasharray: '3 3', stroke: '#1e1e30', horizontal: false }),
+            ce(XAxis, { type: 'number', tick: { fill:'#475569', fontSize:11 }, axisLine: false, tickLine: false }),
+            ce(YAxis, { type: 'category', dataKey: 'zip', tick: { fill:'#94a3b8', fontSize:11 }, axisLine: false, tickLine: false, width: 44 }),
+            ce(RechartTooltip, { content: ce(CustomTooltip), cursor: { fill:'rgba(255,255,255,0.04)' } }),
+            ce(Bar, { dataKey: 'count', radius: [0,4,4,0], maxBarSize: 22, label: { position:'right', fontSize:11, fill:'#64748b' } },
+              barCells
+            )
+          )
+        )
+      );
 
-              {/* SVG Map */}
-              <div className="panel">
-                <div className="panel-title">Geographic Distribution</div>
-                <div className="map-wrap" ref={mapRef}>
-                  <svg viewBox="0 0 500 380" width="100%" style={{ display:'block' }}>
-                    {/* Background */}
-                    <rect width="500" height="380" fill="#0d0d1a" rx="8" />
+      // ── Table ─────────────────────────────────────────────────────────────
+      var tableRows = ZIP_DATA.map(function(d, i) {
+        var u    = urgency(d.count);
+        var pct  = ((d.count / total) * 100).toFixed(1);
+        var barW = Math.round((d.count / ZIP_DATA[0].count) * 100);
+        return ce('tr', { key: d.zip },
+          ce('td', { style: { color:'#475569', fontWeight:600 } }, '#' + (i + 1)),
+          ce('td', { style: { fontWeight:700, color:u.color } }, d.zip),
+          ce('td', { style: { color:'#cbd5e1' } }, d.neighborhood),
+          ce('td', { style: { fontWeight:700, color:u.color, fontSize:'1rem' } }, String(d.count)),
+          ce('td', { style: { color:'#64748b' } }, pct + '%'),
+          ce('td', null, ce('span', { className: 'badge ' + u.badge }, u.level)),
+          ce('td', { style: { width:'160px' } },
+            ce('div', { style: { background:'#1e1e30', borderRadius:4, height:8, overflow:'hidden' } },
+              ce('div', { style: { background:u.color, width:barW+'%', height:'100%', borderRadius:4, opacity:0.8 } })
+            )
+          )
+        );
+      });
 
-                    {/* Subtle grid */}
-                    {[100,200,300,400].map(x =>
-                      <line key={x} x1={x} y1="0" x2={x} y2="380" stroke="#1a1a2e" strokeWidth="1" />
-                    )}
-                    {[76,152,228,304].map(y =>
-                      <line key={y} x1="0" y1={y} x2="500" y2={y} stroke="#1a1a2e" strokeWidth="1" />
-                    )}
+      var tablePanel = ce('div', { className: 'table-panel' },
+        ce('div', { className: 'panel-title', style: { marginBottom:12 } }, 'Neighborhood Breakdown'),
+        ce('table', null,
+          ce('thead', null,
+            ce('tr', null,
+              ce('th', null, 'Rank'),
+              ce('th', null, 'ZIP Code'),
+              ce('th', null, 'Neighborhood'),
+              ce('th', null, 'Requests'),
+              ce('th', null, 'Share'),
+              ce('th', null, 'Urgency'),
+              ce('th', null, 'Volume Bar')
+            )
+          ),
+          ce('tbody', null, tableRows)
+        )
+      );
 
-                    {/* Compass */}
-                    <text x="480" y="22" fontSize="11" fill="#2d2d44" textAnchor="middle">N</text>
-                    <line x1="480" y1="26" x2="480" y2="34" stroke="#2d2d44" strokeWidth="1.5" markerEnd="url(#arr)" />
-
-                    {/* Strip label */}
-                    <text x="258" y="340" fontSize="9" fill="#1e2a44" textAnchor="middle" fontStyle="italic">The Strip</text>
-
-                    {/* ZIP circles */}
-                    {ZIP_DATA.map(d => {
-                      const pos = MAP_POSITIONS[d.zip];
-                      const u   = urgency(d.count);
-                      const isHov = hovered?.zip === d.zip;
-                      const isSel = selected?.zip === d.zip;
-                      const r = 6 + Math.sqrt(d.count) * 1.4;
-                      return (
-                        <g key={d.zip}
-                           style={{ cursor: 'pointer' }}
-                           onMouseMove={e => handleMapHover(e, d)}
-                           onMouseLeave={() => setHovered(null)}
-                           onClick={() => setSelected(isSel ? null : d)}>
-                          {/* Pulse ring on hover/select */}
-                          {(isHov || isSel) &&
-                            <circle cx={pos.x} cy={pos.y} r={r + 6}
-                              fill="none" stroke={u.color} strokeWidth="1.5" opacity="0.4" />
-                          }
-                          <circle cx={pos.x} cy={pos.y} r={r}
-                            fill={u.color} opacity={isHov || isSel ? 1 : 0.75}
-                            stroke={isHov || isSel ? '#fff' : 'none'} strokeWidth="1.5" />
-                          <text x={pos.x} y={pos.y + 1} fontSize="8" fill="#000"
-                            textAnchor="middle" dominantBaseline="middle"
-                            fontWeight="700" style={{ pointerEvents:'none' }}>
-                            {d.count}
-                          </text>
-                          <text x={pos.x} y={pos.y + r + 11} fontSize="8.5" fill="#94a3b8"
-                            textAnchor="middle" style={{ pointerEvents:'none' }}>
-                            {d.zip}
-                          </text>
-                        </g>
-                      );
-                    })}
-                  </svg>
-
-                  {/* Hover tooltip */}
-                  {hovered && (
-                    <div className="map-tooltip" style={{ left: tooltipPos.x, top: tooltipPos.y }}>
-                      <div className="map-tooltip-zip" style={{ color: urgency(hovered.count).color }}>
-                        {hovered.zip}
-                      </div>
-                      <div style={{ color:'#cbd5e1' }}>{hovered.neighborhood}</div>
-                      <div className="map-tooltip-count" style={{ color: urgency(hovered.count).color }}>
-                        {hovered.count} requests
-                      </div>
-                      <div style={{ color:'#64748b', fontSize:'0.72rem', textTransform:'uppercase', letterSpacing:1 }}>
-                        {urgency(hovered.count).level}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Legend */}
-                <div className="legend">
-                  {[['#ef4444','Critical (45+)'],['#f97316','High (30–44)'],
-                    ['#eab308','Moderate (20–29)'],['#22c55e','Low (<20)']].map(([c,l]) =>
-                    <div key={c} className="legend-item">
-                      <div className="legend-dot" style={{ background: c }} />
-                      {l}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Bar chart */}
-              <div className="panel">
-                <div className="panel-title">Requests by ZIP Code</div>
-                <ResponsiveContainer width="100%" height={340}>
-                  <BarChart data={sortedBar} layout="vertical"
-                    margin={{ top: 0, right: 40, bottom: 0, left: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1e1e30" horizontal={false} />
-                    <XAxis type="number" tick={{ fill:'#475569', fontSize:11 }}
-                      axisLine={false} tickLine={false} />
-                    <YAxis type="category" dataKey="zip"
-                      tick={{ fill:'#94a3b8', fontSize:11 }}
-                      axisLine={false} tickLine={false} width={44} />
-                    <RechartTooltip content={<CustomTooltip />} cursor={{ fill:'rgba(255,255,255,0.04)' }} />
-                    <Bar dataKey="count" radius={[0, 4, 4, 0]} maxBarSize={22}
-                      label={{ position:'right', fontSize:11, fill:'#64748b' }}>
-                      {sortedBar.map(d =>
-                        <Cell key={d.zip} fill={urgency(d.count).color} fillOpacity={0.85} />
-                      )}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Neighborhood table */}
-            <div className="table-panel">
-              <div className="panel-title" style={{ marginBottom:12 }}>
-                Neighborhood Breakdown
-              </div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>ZIP Code</th>
-                    <th>Neighborhood</th>
-                    <th>Requests</th>
-                    <th>Share</th>
-                    <th>Urgency</th>
-                    <th>Volume Bar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {ZIP_DATA.map((d, i) => {
-                    const u = urgency(d.count);
-                    const pct = ((d.count / total) * 100).toFixed(1);
-                    const barW = Math.round((d.count / ZIP_DATA[0].count) * 100);
-                    return (
-                      <tr key={d.zip}>
-                        <td style={{ color:'#475569', fontWeight:600 }}>#{i + 1}</td>
-                        <td style={{ fontWeight:700, color: u.color }}>{d.zip}</td>
-                        <td style={{ color:'#cbd5e1' }}>{d.neighborhood}</td>
-                        <td style={{ fontWeight:700, color: u.color, fontSize:'1rem' }}>{d.count}</td>
-                        <td style={{ color:'#64748b' }}>{pct}%</td>
-                        <td>
-                          <span className={`badge ${u.badge}`}>{u.level}</span>
-                        </td>
-                        <td style={{ width:'160px' }}>
-                          <div style={{ background:'#1e1e30', borderRadius:4, height:8, overflow:'hidden' }}>
-                            <div style={{
-                              background: u.color,
-                              width: `${barW}%`,
-                              height: '100%',
-                              borderRadius: 4,
-                              opacity: 0.8
-                            }} />
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+      // ── Root ──────────────────────────────────────────────────────────────
+      return ce('div', null,
+        header,
+        ce('div', { className: 'dash-body' },
+          statRow,
+          ce('div', { className: 'main-grid' }, mapPanel, chartPanel),
+          tablePanel
+        )
       );
     }
   </script>
