@@ -404,7 +404,8 @@ var ZIP_DATA = [
   { zip:'89110', nbhd:'East LV',           count:18 },
   { zip:'89115', nbhd:'North Nellis',      count:14 },
   { zip:'89146', nbhd:'Spring Valley',     count:12 },
-  { zip:'89128', nbhd:'Summerlin',         count: 9 }
+  { zip:'89128', nbhd:'Summerlin',         count: 9 },
+  { zip:'89004', nbhd:'Blue Diamond',      count: 8 }
 ];
 
 var MAP_POS = {
@@ -412,7 +413,8 @@ var MAP_POS = {
   '89104':{ x:348, y:202 }, '89119':{ x:300, y:310 }, '89102':{ x:220, y:228 },
   '89107':{ x:196, y:168 }, '89121':{ x:405, y:316 }, '89108':{ x:286, y:115 },
   '89110':{ x:452, y:232 }, '89115':{ x:420, y:108 }, '89146':{ x:128, y:242 },
-  '89128':{ x: 55, y:165 }
+  '89128':{ x: 55, y:165 },
+  '89004':{ x: 40, y:355 }
 };
 
 /* ── Resources per ZIP ──────────────────────────────────────────────────── */
@@ -481,6 +483,10 @@ var RESOURCES = {
     { name:'Three Square Summerlin Pantry',    type:'Food Pantry',       icon:'🥫', phone:'702-644-3663' },
     { name:'Summerlin Library',                type:'Cooling Center',    icon:'❄️', phone:'702-507-3860' },
     { name:'St. Jude\'s Ranch Resource Ctr',  type:'Family Services',   icon:'🤝', phone:'702-294-7100' }
+  ],
+  '89004': [
+    { name:'Nevada SPCA',                      type:'Animal Services',   icon:'🐾', phone:'702-873-7722' },
+    { name:'Pets of the Homeless',             type:'Pet Food / Vet',    icon:'🐕', phone:'775-841-7463' }
   ]
 };
 
@@ -558,6 +564,40 @@ function buildMap(total) {
   [76,152,228,304].forEach(function(y) {
     svg.appendChild(svgEl('line', { x1:0, y1:y, x2:500, y2:y, stroke:'#111D30', 'stroke-width':1 }));
   });
+
+  /* ── Street grid — faint major LV roads ── */
+  var rS = 'rgba(255,255,255,0.08)';
+  var rT = 'rgba(255,255,255,0.18)';
+
+  function roadLine(x1, y1, x2, y2) {
+    svg.appendChild(svgEl('line', { x1:x1, y1:y1, x2:x2, y2:y2, stroke:rS, 'stroke-width':1 }));
+  }
+  function roadLabel(x, y, label, anchor) {
+    var t = svgEl('text', { x:x, y:y, 'font-size':7, fill:rT,
+      'text-anchor':anchor||'start', 'font-style':'italic', style:'pointer-events:none' });
+    t.textContent = label;
+    svg.appendChild(t);
+  }
+
+  // Las Vegas Blvd / The Strip (vertical, center)
+  roadLine(252, 0, 252, 380);
+  roadLabel(255, 18, 'Las Vegas Blvd / The Strip', 'start');
+
+  // Charleston Blvd (horizontal, upper)
+  roadLine(0, 155, 500, 155);
+  roadLabel(4, 153, 'Charleston Blvd', 'start');
+
+  // Sahara Ave (horizontal, upper-mid)
+  roadLine(0, 192, 500, 192);
+  roadLabel(4, 190, 'Sahara Ave', 'start');
+
+  // Flamingo Rd (horizontal, middle)
+  roadLine(0, 240, 500, 240);
+  roadLabel(4, 238, 'Flamingo Rd', 'start');
+
+  // Tropicana Ave (horizontal, lower-mid)
+  roadLine(0, 275, 500, 275);
+  roadLabel(4, 273, 'Tropicana Ave', 'start');
 
   function txt(x, y, content, size, fill, anchor, style) {
     var t = svgEl('text', { x:x, y:y, 'font-size':size, fill:fill, 'text-anchor':anchor||'middle' });
