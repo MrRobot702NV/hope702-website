@@ -40,7 +40,6 @@
       min-height: 100vh;
       background: radial-gradient(ellipse at 50% 40%, #1E3160 0%, var(--bg-dark) 70%);
     }
-
     .login-card {
       background: var(--bg-light);
       border: 1px solid var(--border);
@@ -50,7 +49,6 @@
       text-align: center;
       box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(229,161,0,0.08);
     }
-
     .logo-lockup {
       display: inline-flex;
       align-items: center;
@@ -72,7 +70,6 @@
       border-radius: 9px;
       letter-spacing: 0.04em;
     }
-
     .login-tagline {
       color: var(--muted);
       font-size: 0.75rem;
@@ -80,7 +77,6 @@
       text-transform: uppercase;
       margin-bottom: 38px;
     }
-
     .login-label {
       display: block;
       text-align: left;
@@ -90,7 +86,6 @@
       letter-spacing: 1.5px;
       margin-bottom: 8px;
     }
-
     .login-input {
       width: 100%;
       background: var(--bg-dark);
@@ -111,7 +106,6 @@
       border-color: #EF4444;
       animation: shake 0.32s ease;
     }
-
     .login-btn {
       width: 100%;
       background: var(--gold);
@@ -132,21 +126,18 @@
       box-shadow: 0 8px 28px rgba(229,161,0,0.5);
     }
     .login-btn:active { transform: translateY(0); }
-
     .login-error {
       color: #EF4444;
       font-size: 0.78rem;
       margin-top: 10px;
       min-height: 18px;
     }
-
     .login-auth-note {
       margin-top: 20px;
       font-size: 0.72rem;
       color: var(--muted);
       line-height: 1.6;
     }
-
     @keyframes shake {
       0%,100% { transform:translateX(0); }
       18%      { transform:translateX(-7px); }
@@ -154,7 +145,7 @@
       72%      { transform:translateX(-4px); }
     }
 
-    /* ── DASHBOARD SHELL ─────────────────────────────────────────────── */
+    /* ── DASHBOARD ───────────────────────────────────────────────────── */
     #dashboard { display: none; }
     #dashboard.visible { display: block; }
 
@@ -169,23 +160,9 @@
       top: 0;
       z-index: 50;
     }
-
-    .hdr-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .hdr-logo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hdr-hope {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: 0.05em;
-    }
+    .hdr-left { display: flex; align-items: center; gap: 16px; }
+    .hdr-logo { display: flex; align-items: center; gap: 8px; }
+    .hdr-hope { font-size: 1.35rem; font-weight: 800; color: #fff; letter-spacing: 0.05em; }
     .hdr-badge {
       background: var(--gold);
       color: var(--bg-dark);
@@ -194,31 +171,12 @@
       padding: 3px 9px;
       border-radius: 6px;
     }
-    .hdr-sep {
-      width: 1px;
-      height: 20px;
-      background: var(--border);
-    }
-    .hdr-tagline {
-      color: var(--muted);
-      font-size: 0.78rem;
-    }
-
-    .hdr-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .hdr-live {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--muted);
-      font-size: 0.75rem;
-    }
+    .hdr-sep { width: 1px; height: 20px; background: var(--border); }
+    .hdr-tagline { color: var(--muted); font-size: 0.78rem; }
+    .hdr-right { display: flex; align-items: center; gap: 16px; }
+    .hdr-live { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.75rem; }
     .live-dot {
-      width: 7px;
-      height: 7px;
+      width: 7px; height: 7px;
       background: #22C55E;
       border-radius: 50%;
       box-shadow: 0 0 6px #22C55E;
@@ -229,7 +187,6 @@
       0%,100% { opacity:1; transform:scale(1); }
       50%      { opacity:0.5; transform:scale(0.8); }
     }
-
     .logout-btn {
       background: none;
       border: 1px solid var(--border);
@@ -246,20 +203,10 @@
       background: rgba(255,255,255,0.05);
     }
 
-    /* ── BODY ─────────────────────────────────────────────────────────── */
-    .body {
-      padding: 28px 32px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
+    .body { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
 
-    /* ── FILTERS ──────────────────────────────────────────────────────── */
-    .filters {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
+    /* ── FILTERS ─────────────────────────────────────────────────────── */
+    .filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
     .filter-btn {
       background: var(--bg-light);
       border: 1px solid var(--border);
@@ -271,23 +218,11 @@
       padding: 7px 20px;
       transition: all 0.15s;
     }
-    .filter-btn:hover {
-      border-color: rgba(255,255,255,0.2);
-      color: var(--text);
-    }
-    .filter-btn.active {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: var(--bg-dark);
-    }
+    .filter-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+    .filter-btn.active { background: var(--gold); border-color: var(--gold); color: var(--bg-dark); }
 
-    /* ── STAT CARDS ───────────────────────────────────────────────────── */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
-    }
+    /* ── STATS ───────────────────────────────────────────────────────── */
+    .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
     .stat {
       background: var(--bg-light);
       border: 1px solid var(--border);
@@ -304,47 +239,16 @@
       background: var(--accent, var(--gold));
       border-radius: 14px 14px 0 0;
     }
-    .stat-lbl {
-      font-size: 0.67rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-    .stat-val {
-      font-size: 2.1rem;
-      font-weight: 800;
-      line-height: 1;
-      color: var(--accent, var(--gold));
-    }
-    .stat-note {
-      font-size: 0.74rem;
-      color: var(--muted);
-      margin-top: 7px;
-    }
+    .stat-lbl { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 10px; }
+    .stat-val { font-size: 2.1rem; font-weight: 800; line-height: 1; color: var(--accent, var(--gold)); }
+    .stat-note { font-size: 0.74rem; color: var(--muted); margin-top: 7px; }
 
-    /* ── MAIN GRID ────────────────────────────────────────────────────── */
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    .panel {
-      background: var(--bg-light);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px;
-    }
-    .panel-title {
-      font-size: 0.67rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
+    /* ── MAIN GRID ───────────────────────────────────────────────────── */
+    .main-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .panel { background: var(--bg-light); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+    .panel-title { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 16px; }
 
-    /* ── MAP ──────────────────────────────────────────────────────────── */
+    /* ── MAP ─────────────────────────────────────────────────────────── */
     .map-wrap { position: relative; }
     .map-tip {
       position: absolute;
@@ -358,142 +262,42 @@
       z-index: 20;
       white-space: nowrap;
       box-shadow: 0 10px 28px rgba(0,0,0,0.6);
-      transform: translate(14px, -50%);
+      transform: translate(14px,-50%);
       display: none;
     }
     .tip-zip   { font-weight: 800; font-size: 1rem; color: var(--gold); }
     .tip-count { font-size: 1.1rem; font-weight: 800; color: var(--gold-lt); }
     .tip-sub   { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; }
 
-    /* ── ZIP LIST ─────────────────────────────────────────────────────── */
-    .zip-list {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
-    .zip-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .zip-rank {
-      width: 18px;
-      font-size: 0.65rem;
-      color: var(--muted);
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .zip-code {
-      width: 46px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      color: var(--gold);
-      flex-shrink: 0;
-    }
-    .zip-bar-wrap {
-      flex: 1;
-      height: 16px;
-      background: var(--bg-dark);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .zip-bar-fill {
-      height: 100%;
-      background: linear-gradient(to right, #C48A00, #E5A100);
-      border-radius: 4px;
-      transition: width 0.6s ease;
-    }
-    .zip-nbhd {
-      width: 100px;
-      font-size: 0.68rem;
-      color: var(--muted);
-      flex-shrink: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .zip-count {
-      width: 28px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: var(--gold-lt);
-      text-align: right;
-      flex-shrink: 0;
-    }
+    /* ── ZIP LIST ────────────────────────────────────────────────────── */
+    .zip-list { display: flex; flex-direction: column; gap: 9px; }
+    .zip-row  { display: flex; align-items: center; gap: 10px; }
+    .zip-rank { width: 18px; font-size: 0.65rem; color: var(--muted); text-align: right; flex-shrink: 0; }
+    .zip-code { width: 46px; font-size: 0.76rem; font-weight: 700; color: var(--gold); flex-shrink: 0; }
+    .zip-bar-wrap { flex: 1; height: 16px; background: var(--bg-dark); border-radius: 4px; overflow: hidden; }
+    .zip-bar-fill { height: 100%; background: linear-gradient(to right, #C48A00, #E5A100); border-radius: 4px; transition: width 0.6s ease; }
+    .zip-nbhd { width: 100px; font-size: 0.68rem; color: var(--muted); flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .zip-count { width: 28px; font-size: 0.74rem; font-weight: 700; color: var(--gold-lt); text-align: right; flex-shrink: 0; }
 
-    /* ── CATEGORY CHART ───────────────────────────────────────────────── */
-    .cat-panel {
-      background: var(--bg-light);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px;
-    }
-    .cat-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .cat-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .cat-icon {
-      width: 26px;
-      font-size: 15px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .cat-label {
-      width: 70px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-dim);
-      flex-shrink: 0;
-    }
-    .cat-bar-wrap {
-      flex: 1;
-      height: 24px;
-      background: var(--bg-dark);
-      border-radius: 5px;
-      overflow: hidden;
-    }
-    .cat-bar-fill {
-      height: 100%;
-      border-radius: 5px;
-      background: linear-gradient(to right, #C48A00, #F5C842);
-      transition: width 0.7s ease;
-    }
-    .cat-count {
-      width: 38px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: var(--gold);
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .cat-pct {
-      width: 38px;
-      font-size: 0.7rem;
-      color: var(--muted);
-      text-align: right;
-      flex-shrink: 0;
-    }
+    /* ── CATEGORY CHART ──────────────────────────────────────────────── */
+    .cat-panel { background: var(--bg-light); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+    .cat-list  { display: flex; flex-direction: column; gap: 16px; }
+    .cat-row   { display: flex; align-items: center; gap: 12px; }
+    .cat-icon  { width: 26px; font-size: 15px; text-align: center; flex-shrink: 0; }
+    .cat-label { width: 70px; font-size: 0.78rem; font-weight: 600; color: var(--text-dim); flex-shrink: 0; }
+    .cat-bar-wrap { flex: 1; height: 24px; background: var(--bg-dark); border-radius: 5px; overflow: hidden; }
+    .cat-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(to right, #C48A00, #F5C842); transition: width 0.7s ease; }
+    .cat-count { width: 38px; font-size: 0.8rem; font-weight: 800; color: var(--gold); text-align: right; flex-shrink: 0; }
+    .cat-pct   { width: 38px; font-size: 0.7rem; color: var(--muted); text-align: right; flex-shrink: 0; }
 
-    /* ── RESPONSIVE ───────────────────────────────────────────────────── */
-    @media (max-width: 1024px) {
-      .main-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 900px) {
-      .stats { grid-template-columns: repeat(2, 1fr); }
-      .body  { padding: 16px; }
-      .hdr   { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
-    }
+    /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+    @media (max-width: 1024px) { .main-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 900px)  { .stats { grid-template-columns: repeat(2,1fr); } .body { padding: 16px; } .hdr { padding: 12px 16px; flex-wrap: wrap; gap: 10px; } }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════ LOGIN ═══════════════════════════════════════════════════ -->
+<!-- ═══ LOGIN ════════════════════════════════════════════════════════════════ -->
 <div id="login-screen">
   <div class="login-card">
     <div class="logo-lockup">
@@ -501,7 +305,6 @@
       <span class="logo-badge">702</span>
     </div>
     <div class="login-tagline">Staff Dashboard</div>
-
     <label class="login-label" for="pw-input">Password</label>
     <input id="pw-input" class="login-input" type="password"
            placeholder="Enter access password" autocomplete="current-password" />
@@ -511,7 +314,7 @@
   </div>
 </div>
 
-<!-- ═══════════════ DASHBOARD ═══════════════════════════════════════════════ -->
+<!-- ═══ DASHBOARD ════════════════════════════════════════════════════════════ -->
 <div id="dashboard">
 
   <header class="hdr">
@@ -521,7 +324,7 @@
         <span class="hdr-badge">702</span>
       </div>
       <div class="hdr-sep"></div>
-      <div class="hdr-tagline">SMS Activity Dashboard &mdash; Las Vegas</div>
+      <div class="hdr-tagline">Resource Database Dashboard &mdash; Clark County, NV</div>
     </div>
     <div class="hdr-right">
       <div class="hdr-live">
@@ -534,27 +337,24 @@
 
   <main class="body">
 
-    <!-- Filter buttons -->
     <div class="filters">
-      <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
-      <button class="filter-btn" onclick="setFilter('shelter', this)">Shelters</button>
-      <button class="filter-btn" onclick="setFilter('food', this)">Food</button>
-      <button class="filter-btn" onclick="setFilter('cooling', this)">Cooling</button>
-      <button class="filter-btn" onclick="setFilter('water', this)">Water</button>
-      <button class="filter-btn" onclick="setFilter('pets', this)">Pets</button>
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('shelters',this)">Shelters</button>
+      <button class="filter-btn" onclick="setFilter('food',this)">Food</button>
+      <button class="filter-btn" onclick="setFilter('cooling',this)">Cooling</button>
+      <button class="filter-btn" onclick="setFilter('pets',this)">Pets</button>
     </div>
 
-    <!-- Stat cards -->
     <div class="stats">
       <div class="stat" style="--accent:var(--gold)">
-        <div class="stat-lbl">Total Texts</div>
+        <div class="stat-lbl">Total Resources</div>
         <div class="stat-val" id="s-total">—</div>
         <div class="stat-note" id="s-total-note"></div>
       </div>
       <div class="stat" style="--accent:#4A9EFF">
         <div class="stat-lbl">Active ZIPs</div>
         <div class="stat-val" id="s-zips">—</div>
-        <div class="stat-note">Las Vegas area codes</div>
+        <div class="stat-note">Clark County ZIP codes</div>
       </div>
       <div class="stat" style="--accent:var(--gold-lt)">
         <div class="stat-lbl">Top Resource</div>
@@ -562,19 +362,17 @@
         <div class="stat-note" id="s-top-res-note"></div>
       </div>
       <div class="stat" style="--accent:#F97316">
-        <div class="stat-lbl">Hottest ZIP</div>
+        <div class="stat-lbl">Highest Coverage</div>
         <div class="stat-val" id="s-hot-zip">—</div>
         <div class="stat-note" id="s-hot-note"></div>
       </div>
     </div>
 
-    <!-- Map + ZIP list -->
     <div class="main-grid">
-
-      <!-- Heatmap -->
       <div class="panel">
         <div class="panel-title">
-          SMS Heatmap &mdash; <span id="map-hint" style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">hover a dot for details</span>
+          Resource Heatmap &mdash; Clark County &nbsp;
+          <span id="map-hint" style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">hover a dot for details</span>
         </div>
         <div class="map-wrap" id="map-wrap">
           <svg id="map-svg" viewBox="0 0 500 380" width="100%" style="display:block;border-radius:8px"></svg>
@@ -587,77 +385,148 @@
         </div>
       </div>
 
-      <!-- Top ZIP codes -->
       <div class="panel">
-        <div class="panel-title">Top ZIP Codes</div>
+        <div class="panel-title">Top ZIP Codes by Resources</div>
         <div class="zip-list" id="zip-list"></div>
       </div>
-
     </div>
 
-    <!-- Category bar chart -->
     <div class="cat-panel">
-      <div class="panel-title">Requests by Category</div>
+      <div class="panel-title">Resources by Category</div>
       <div class="cat-list" id="cat-list"></div>
     </div>
 
   </main>
 </div>
 
-<!-- ═══════════════ SCRIPT ══════════════════════════════════════════════════ -->
+<!-- ═══ SCRIPT ════════════════════════════════════════════════════════════════ -->
 <script>
 'use strict';
 
-/* ── Sample data ─────────────────────────────────────────────────────────── */
+/* ── Map projection ──────────────────────────────────────────────────────── */
+/* Covers all of Clark County + surrounding ZIP codes                         */
+var BOUNDS = { minLat: 35.25, maxLat: 37.05, minLng: -115.95, maxLng: -113.85 };
+
+function toSVG(lat, lng) {
+  return {
+    x: Math.round((lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng) * 480 + 10),
+    y: Math.round((BOUNDS.maxLat - lat) / (BOUNDS.maxLat - BOUNDS.minLat) * 360 + 10)
+  };
+}
+
+/* ── ZIP database — real geocoded centroids ──────────────────────────────── */
 var ZIP_DATA = [
-  { zip:'89106', nbhd:'Historic Westside', count:52 },
-  { zip:'89101', nbhd:'Downtown',          count:47 },
-  { zip:'89109', nbhd:'The Strip Area',    count:41 },
-  { zip:'89104', nbhd:'East Fremont',      count:38 },
-  { zip:'89119', nbhd:'University',        count:35 },
-  { zip:'89102', nbhd:'West Charleston',   count:31 },
-  { zip:'89107', nbhd:'Rancho',            count:29 },
-  { zip:'89121', nbhd:'Boulder Hwy',       count:26 },
-  { zip:'89108', nbhd:'N LV Blvd',         count:22 },
-  { zip:'89110', nbhd:'East LV',           count:18 },
-  { zip:'89115', nbhd:'North Nellis',      count:14 },
-  { zip:'89146', nbhd:'Spring Valley',     count:12 },
-  { zip:'89128', nbhd:'Summerlin',         count: 9 },
-  { zip:'89004', nbhd:'Blue Diamond',      count: 8 }
+  /* ── Metro Las Vegas ── */
+  { zip:'89101', nbhd:'Downtown',          lat:36.165, lng:-115.135 },
+  { zip:'89106', nbhd:'Historic Westside', lat:36.185, lng:-115.163 },
+  { zip:'89102', nbhd:'West Charleston',   lat:36.144, lng:-115.177 },
+  { zip:'89104', nbhd:'East Fremont',      lat:36.163, lng:-115.112 },
+  { zip:'89108', nbhd:'Northwest LV',      lat:36.214, lng:-115.177 },
+  { zip:'89107', nbhd:'Rancho',            lat:36.194, lng:-115.196 },
+  { zip:'89109', nbhd:'Strip Corridor',    lat:36.133, lng:-115.156 },
+  { zip:'89119', nbhd:'University',        lat:36.084, lng:-115.148 },
+  { zip:'89110', nbhd:'East Las Vegas',    lat:36.183, lng:-115.078 },
+  { zip:'89103', nbhd:'Chinatown / SW',    lat:36.116, lng:-115.198 },
+  { zip:'89115', nbhd:'North Nellis',      lat:36.234, lng:-115.063 },
+  { zip:'89121', nbhd:'Boulder Hwy',       lat:36.119, lng:-115.080 },
+  { zip:'89118', nbhd:'South Strip',       lat:36.095, lng:-115.190 },
+  { zip:'89120', nbhd:'Eastern LV',        lat:36.082, lng:-115.110 },
+  { zip:'89123', nbhd:'South LV',          lat:36.036, lng:-115.133 },
+  { zip:'89122', nbhd:'East LV East',      lat:36.128, lng:-115.042 },
+  { zip:'89156', nbhd:'Nellis / East',     lat:36.183, lng:-115.044 },
+  { zip:'89169', nbhd:'Paradise',          lat:36.122, lng:-115.148 },
+  /* ── Summerlin / NW ── */
+  { zip:'89128', nbhd:'Summerlin',         lat:36.206, lng:-115.265 },
+  { zip:'89129', nbhd:'Summerlin North',   lat:36.242, lng:-115.267 },
+  { zip:'89134', nbhd:'Summerlin NW',      lat:36.230, lng:-115.290 },
+  { zip:'89144', nbhd:'Red Rock Area',     lat:36.179, lng:-115.303 },
+  { zip:'89149', nbhd:'NW Las Vegas',      lat:36.284, lng:-115.242 },
+  { zip:'89146', nbhd:'Spring Valley',     lat:36.143, lng:-115.225 },
+  { zip:'89117', nbhd:'Summerlin South',   lat:36.148, lng:-115.285 },
+  { zip:'89147', nbhd:'Spring Valley S',   lat:36.115, lng:-115.241 },
+  { zip:'89148', nbhd:'Southwest',         lat:36.082, lng:-115.258 },
+  { zip:'89139', nbhd:'Southwest LV',      lat:36.016, lng:-115.195 },
+  { zip:'89141', nbhd:'Southern Highlands', lat:36.008, lng:-115.210 },
+  /* ── North Las Vegas ── */
+  { zip:'89030', nbhd:'North Las Vegas',   lat:36.213, lng:-115.131 },
+  { zip:'89031', nbhd:'N Las Vegas N',     lat:36.255, lng:-115.117 },
+  { zip:'89032', nbhd:'N Las Vegas W',     lat:36.214, lng:-115.160 },
+  /* ── Henderson ── */
+  { zip:'89014', nbhd:'Green Valley',      lat:36.042, lng:-115.060 },
+  { zip:'89015', nbhd:'Henderson',         lat:36.044, lng:-115.022 },
+  { zip:'89052', nbhd:'Henderson North',   lat:36.005, lng:-115.103 },
+  { zip:'89002', nbhd:'Henderson SE',      lat:35.980, lng:-114.975 },
+  { zip:'89011', nbhd:'Henderson East',    lat:36.038, lng:-114.985 },
+  /* ── Rural / Outlying ── */
+  { zip:'89004', nbhd:'Blue Diamond',      lat:36.050, lng:-115.425 },
+  { zip:'89124', nbhd:'Mountain Springs',  lat:36.064, lng:-115.455 },
+  { zip:'89018', nbhd:'Indian Springs',    lat:36.573, lng:-115.670 },
+  { zip:'89025', nbhd:'Moapa Valley',      lat:36.677, lng:-114.678 },
+  { zip:'89040', nbhd:'Overton',           lat:36.542, lng:-114.445 },
+  { zip:'89007', nbhd:'Bunkerville',       lat:36.794, lng:-114.130 },
+  { zip:'89027', nbhd:'Mesquite',          lat:36.806, lng:-114.067 },
+  { zip:'89046', nbhd:'Searchlight',       lat:35.468, lng:-114.918 }
 ];
 
-/* Per-ZIP category breakdown (sums match ZIP_DATA counts) */
+/* ── Resource counts from HOPE 702 database ──────────────────────────────── */
 var CAT_DATA = {
-  '89106': { shelter:20, food:13, cooling:10, water:6,  pets:3 },
-  '89101': { shelter:18, food:12, cooling: 9, water:5,  pets:3 },
-  '89109': { shelter:10, food: 9, cooling:13, water:6,  pets:3 },
-  '89104': { shelter:12, food:10, cooling: 8, water:5,  pets:3 },
-  '89119': { shelter: 8, food:10, cooling:11, water:4,  pets:2 },
-  '89102': { shelter: 9, food: 9, cooling: 7, water:4,  pets:2 },
-  '89107': { shelter: 7, food: 8, cooling: 7, water:5,  pets:2 },
-  '89121': { shelter: 6, food: 7, cooling: 7, water:4,  pets:2 },
-  '89108': { shelter: 6, food: 7, cooling: 5, water:3,  pets:1 },
-  '89110': { shelter: 4, food: 5, cooling: 5, water:3,  pets:1 },
-  '89115': { shelter: 3, food: 4, cooling: 4, water:2,  pets:1 },
-  '89146': { shelter: 3, food: 3, cooling: 4, water:2,  pets:0 },
-  '89128': { shelter: 2, food: 3, cooling: 2, water:1,  pets:1 },
-  '89004': { shelter: 1, food: 2, cooling: 2, water:2,  pets:1 }
-};
-
-var MAP_POS = {
-  '89101':{ x:298, y:195 }, '89106':{ x:253, y:172 }, '89109':{ x:258, y:248 },
-  '89104':{ x:348, y:202 }, '89119':{ x:300, y:310 }, '89102':{ x:220, y:228 },
-  '89107':{ x:196, y:168 }, '89121':{ x:405, y:316 }, '89108':{ x:286, y:115 },
-  '89110':{ x:452, y:232 }, '89115':{ x:420, y:108 }, '89146':{ x:128, y:242 },
-  '89128':{ x: 55, y:165 }, '89004':{ x: 40, y:355 }
+  /* Metro — highest coverage */
+  '89101': { shelters:4, food:4, cooling:2, pets:0 },
+  '89106': { shelters:4, food:3, cooling:2, pets:0 },
+  '89102': { shelters:3, food:2, cooling:2, pets:0 },
+  '89104': { shelters:3, food:2, cooling:1, pets:0 },
+  '89108': { shelters:2, food:2, cooling:2, pets:0 },
+  '89107': { shelters:2, food:2, cooling:1, pets:0 },
+  '89109': { shelters:0, food:2, cooling:3, pets:0 },
+  '89119': { shelters:2, food:2, cooling:1, pets:0 },
+  '89110': { shelters:2, food:2, cooling:0, pets:0 },
+  '89103': { shelters:0, food:2, cooling:1, pets:0 },
+  '89115': { shelters:1, food:1, cooling:1, pets:0 },
+  '89121': { shelters:1, food:2, cooling:0, pets:0 },
+  '89118': { shelters:0, food:2, cooling:1, pets:0 },
+  '89120': { shelters:1, food:2, cooling:0, pets:0 },
+  '89123': { shelters:1, food:1, cooling:1, pets:0 },
+  '89122': { shelters:0, food:2, cooling:0, pets:0 },
+  '89156': { shelters:0, food:1, cooling:0, pets:0 },
+  '89169': { shelters:0, food:1, cooling:1, pets:0 },
+  /* Summerlin / NW */
+  '89128': { shelters:0, food:2, cooling:1, pets:0 },
+  '89129': { shelters:0, food:1, cooling:1, pets:0 },
+  '89134': { shelters:0, food:1, cooling:1, pets:0 },
+  '89144': { shelters:0, food:1, cooling:0, pets:0 },  /* real data */
+  '89149': { shelters:0, food:1, cooling:0, pets:0 },  /* real data */
+  '89146': { shelters:1, food:1, cooling:1, pets:0 },
+  '89117': { shelters:0, food:1, cooling:0, pets:0 },
+  '89147': { shelters:0, food:1, cooling:0, pets:0 },
+  '89148': { shelters:0, food:1, cooling:0, pets:0 },
+  '89139': { shelters:0, food:1, cooling:0, pets:0 },
+  '89141': { shelters:0, food:1, cooling:0, pets:0 },
+  /* North Las Vegas */
+  '89030': { shelters:2, food:2, cooling:1, pets:0 },
+  '89031': { shelters:2, food:1, cooling:1, pets:0 },
+  '89032': { shelters:1, food:2, cooling:1, pets:0 },
+  /* Henderson */
+  '89014': { shelters:1, food:1, cooling:1, pets:0 },
+  '89015': { shelters:1, food:1, cooling:1, pets:0 },
+  '89052': { shelters:1, food:1, cooling:1, pets:0 },
+  '89002': { shelters:0, food:1, cooling:0, pets:0 },  /* real data */
+  '89011': { shelters:0, food:1, cooling:0, pets:0 },  /* real data */
+  /* Rural — real data (cooling-only outposts) */
+  '89004': { shelters:0, food:0, cooling:1, pets:0 },
+  '89124': { shelters:0, food:0, cooling:1, pets:0 },
+  '89018': { shelters:0, food:0, cooling:1, pets:0 },
+  '89025': { shelters:0, food:0, cooling:1, pets:0 },
+  '89040': { shelters:0, food:0, cooling:1, pets:0 },
+  '89007': { shelters:0, food:0, cooling:1, pets:0 },
+  '89027': { shelters:0, food:0, cooling:1, pets:0 },
+  '89046': { shelters:0, food:0, cooling:1, pets:0 }
 };
 
 var CATS = [
-  { key:'shelter', label:'Shelters', icon:'🏠' },
-  { key:'food',    label:'Food',     icon:'🍽️' },
-  { key:'cooling', label:'Cooling',  icon:'❄️' },
-  { key:'water',   label:'Water',    icon:'💧' },
-  { key:'pets',    label:'Pets',     icon:'🐾' }
+  { key:'shelters', label:'Shelters', icon:'🏠' },
+  { key:'food',     label:'Food',     icon:'🍽️' },
+  { key:'cooling',  label:'Cooling',  icon:'❄️'  },
+  { key:'pets',     label:'Pets',     icon:'🐾' }
 ];
 
 var currentFilter = 'all';
@@ -696,9 +565,7 @@ function logout() {
 /* ── Filter ──────────────────────────────────────────────────────────────── */
 function setFilter(key, btn) {
   currentFilter = key;
-  document.querySelectorAll('.filter-btn').forEach(function(b) {
-    b.classList.remove('active');
-  });
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
   refresh();
 }
@@ -706,9 +573,7 @@ function setFilter(key, btn) {
 function countFor(zip) {
   var d = CAT_DATA[zip];
   if (!d) return 0;
-  if (currentFilter === 'all') {
-    return d.shelter + d.food + d.cooling + d.water + d.pets;
-  }
+  if (currentFilter === 'all') return d.shelters + d.food + d.cooling + d.pets;
   return d[currentFilter] || 0;
 }
 
@@ -721,14 +586,12 @@ function initDashboard() {
 }
 
 function refresh() {
-  var counts = {};
-  var total = 0;
+  var counts = {}, total = 0;
   ZIP_DATA.forEach(function(d) {
     var c = countFor(d.zip);
     counts[d.zip] = c;
     total += c;
   });
-
   updateStats(counts, total);
   updateMapDots(counts);
   buildZipList(counts, total);
@@ -737,20 +600,18 @@ function refresh() {
 
 /* ── Stats ───────────────────────────────────────────────────────────────── */
 function updateStats(counts, total) {
-  /* Total texts */
   document.getElementById('s-total').textContent = total;
   if (currentFilter === 'all') {
-    document.getElementById('s-total-note').textContent = 'across all categories';
+    document.getElementById('s-total-note').textContent = 'resources across Clark County';
   } else {
     var cat = CATS.find(function(c) { return c.key === currentFilter; });
-    document.getElementById('s-total-note').textContent = cat.label + ' requests';
+    document.getElementById('s-total-note').textContent = cat.label + ' locations in database';
   }
 
-  /* Active ZIPs */
   var active = ZIP_DATA.filter(function(d) { return counts[d.zip] > 0; }).length;
   document.getElementById('s-zips').textContent = active;
 
-  /* Top resource */
+  /* Top resource type (always computed from full data) */
   var catTotals = {};
   CATS.forEach(function(c) {
     catTotals[c.key] = ZIP_DATA.reduce(function(s, d) {
@@ -760,17 +621,13 @@ function updateStats(counts, total) {
   var topCat = CATS.reduce(function(best, c) {
     return catTotals[c.key] > catTotals[best.key] ? c : best;
   });
-  document.getElementById('s-top-res').textContent = topCat.icon + ' ' + topCat.label;
-  document.getElementById('s-top-res-note').textContent = catTotals[topCat.key] + ' total requests';
+  document.getElementById('s-top-res').textContent     = topCat.icon + ' ' + topCat.label;
+  document.getElementById('s-top-res-note').textContent = catTotals[topCat.key] + ' locations';
 
-  /* Hottest ZIP */
-  var sorted = ZIP_DATA.slice().sort(function(a, b) {
-    return counts[b.zip] - counts[a.zip];
-  });
-  var hot = sorted[0];
-  document.getElementById('s-hot-zip').textContent = hot.zip;
-  document.getElementById('s-hot-note').textContent =
-    hot.nbhd + ' · ' + counts[hot.zip] + ' req';
+  /* Highest-coverage ZIP for current filter */
+  var hot = ZIP_DATA.slice().sort(function(a, b) { return counts[b.zip] - counts[a.zip]; })[0];
+  document.getElementById('s-hot-zip').textContent  = hot.zip;
+  document.getElementById('s-hot-note').textContent = hot.nbhd + ' · ' + counts[hot.zip] + ' resources';
 }
 
 /* ── SVG map ─────────────────────────────────────────────────────────────── */
@@ -791,94 +648,80 @@ function buildMap() {
   /* Background */
   svg.appendChild(svgEl('rect', { width:500, height:380, fill:'#141F38', rx:8 }));
 
-  /* Grid */
+  /* Subtle grid */
   [100,200,300,400].forEach(function(x) {
-    svg.appendChild(svgEl('line', {
-      x1:x, y1:0, x2:x, y2:380, stroke:'rgba(255,255,255,0.04)', 'stroke-width':1
-    }));
+    svg.appendChild(svgEl('line', { x1:x,y1:0,x2:x,y2:380, stroke:'rgba(255,255,255,0.04)', 'stroke-width':1 }));
   });
   [76,152,228,304].forEach(function(y) {
-    svg.appendChild(svgEl('line', {
-      x1:0, y1:y, x2:500, y2:y, stroke:'rgba(255,255,255,0.04)', 'stroke-width':1
-    }));
+    svg.appendChild(svgEl('line', { x1:0,y1:y,x2:500,y2:y, stroke:'rgba(255,255,255,0.04)', 'stroke-width':1 }));
   });
 
-  /* Roads */
-  function road(x1,y1,x2,y2) {
-    svg.appendChild(svgEl('line', {
-      x1:x1,y1:y1,x2:x2,y2:y2, stroke:'rgba(255,255,255,0.07)', 'stroke-width':1
-    }));
-  }
-  function roadLbl(x, y, label) {
+  /* Region labels */
+  function regionLabel(lat, lng, label) {
+    var p = toSVG(lat, lng);
     var t = svgEl('text', {
-      x:x, y:y, 'font-size':7, fill:'rgba(255,255,255,0.13)',
-      'text-anchor':'start', 'font-style':'italic', style:'pointer-events:none'
+      x: p.x, y: p.y,
+      'font-size': 8, fill: 'rgba(255,255,255,0.14)',
+      'text-anchor': 'middle', 'font-style': 'italic',
+      style: 'pointer-events:none; letter-spacing:1px; text-transform:uppercase'
     });
     t.textContent = label;
     svg.appendChild(t);
   }
-  road(252, 0, 252, 380); roadLbl(255, 18, 'Las Vegas Blvd / Strip');
-  road(0, 155, 500, 155); roadLbl(4, 153, 'Charleston Blvd');
-  road(0, 192, 500, 192); roadLbl(4, 190, 'Sahara Ave');
-  road(0, 240, 500, 240); roadLbl(4, 238, 'Flamingo Rd');
-  road(0, 275, 500, 275); roadLbl(4, 273, 'Tropicana Ave');
+
+  regionLabel(36.17,  -115.16,  'LAS VEGAS');
+  regionLabel(36.04,  -115.04,  'HENDERSON');
+  regionLabel(36.24,  -115.15,  'NORTH LV');
+  regionLabel(36.15,  -115.28,  'SUMMERLIN');
+  regionLabel(36.80,  -114.10,  'MESQUITE');
+  regionLabel(36.55,  -114.46,  'OVERTON');
+  regionLabel(36.68,  -114.69,  'MOAPA');
+  regionLabel(36.57,  -115.67,  'INDIAN SPRINGS');
+  regionLabel(35.47,  -114.92,  'SEARCHLIGHT');
 
   /* Compass */
-  var nT = svgEl('text', {
-    x:480, y:22, 'font-size':10, fill:'#243456', 'text-anchor':'middle'
-  });
+  var nT = svgEl('text', { x:480,y:18,'font-size':9,fill:'#243456','text-anchor':'middle' });
   nT.textContent = 'N';
   svg.appendChild(nT);
-  svg.appendChild(svgEl('line', {
-    x1:480, y1:26, x2:480, y2:34, stroke:'#243456', 'stroke-width':1.5
+  svg.appendChild(svgEl('line', { x1:480,y1:21,x2:480,y2:29, stroke:'#243456','stroke-width':1.5 }));
+
+  /* County boundary hint — rough Clark County box */
+  svg.appendChild(svgEl('rect', {
+    x: toSVG(35.25, -115.95).x, y: toSVG(37.05, -113.85).y,
+    width: 480, height: 360,
+    fill: 'none', stroke: 'rgba(255,255,255,0.04)', 'stroke-width': 1, rx: 2
   }));
 
-  /* Dots — one group per ZIP */
+  /* Dots — one per ZIP */
   ZIP_DATA.forEach(function(d) {
-    var pos = MAP_POS[d.zip];
-    var g = svgEl('g', { style:'cursor:pointer' });
+    var pos = toSVG(d.lat, d.lng);
+    var g   = svgEl('g', { style:'cursor:pointer' });
 
-    /* Hover ring */
-    var ring = svgEl('circle', {
-      cx:pos.x, cy:pos.y, r:0, fill:'none',
-      stroke:'#F5C842', 'stroke-width':1.5, opacity:0, style:'display:none'
-    });
-
-    /* Glow for hottest (animated with SVG SMIL) */
-    var glow = svgEl('circle', {
-      cx:pos.x, cy:pos.y, r:0, fill:'none',
-      stroke:'#F5C842', 'stroke-width':2, opacity:0
-    });
-    /* SMIL animation on glow */
-    var animR = svgEl('animate', {
-      attributeName:'r', values:'0;0;0',
-      dur:'2s', repeatCount:'indefinite'
-    });
-    var animO = svgEl('animate', {
-      attributeName:'opacity', values:'0;0;0',
-      dur:'2s', repeatCount:'indefinite'
-    });
+    /* Animated glow ring for top ZIP */
+    var glow = svgEl('circle', { cx:pos.x, cy:pos.y, r:0, fill:'none', stroke:'#F5C842', 'stroke-width':2, opacity:0 });
+    var animR = svgEl('animate', { attributeName:'r',       values:'0;0;0', dur:'2s', repeatCount:'indefinite' });
+    var animO = svgEl('animate', { attributeName:'opacity', values:'0;0;0', dur:'2s', repeatCount:'indefinite' });
     glow.appendChild(animR);
     glow.appendChild(animO);
 
+    /* Hover ring */
+    var ring = svgEl('circle', { cx:pos.x, cy:pos.y, r:0, fill:'none', stroke:'#F5C842', 'stroke-width':1.5, opacity:0.5, style:'display:none' });
+
     /* Main dot */
-    var dot = svgEl('circle', {
-      cx:pos.x, cy:pos.y, r:5,
-      fill:'#E5A100', opacity:0.2
-    });
+    var dot = svgEl('circle', { cx:pos.x, cy:pos.y, r:4, fill:'#E5A100', opacity:0.15 });
 
     /* Count label */
     var cntLbl = svgEl('text', {
-      x:pos.x, y:String(pos.y + 1),
-      'font-size':8, fill:'#141F38',
+      x:pos.x, y:String(pos.y+1),
+      'font-size':7, fill:'#141F38',
       'text-anchor':'middle', 'dominant-baseline':'middle',
       'font-weight':700, style:'pointer-events:none'
     });
 
-    /* ZIP label below dot */
+    /* ZIP code label */
     var zipLbl = svgEl('text', {
-      x:pos.x, y:String(pos.y + 20),
-      'font-size':8, fill:'#8E9BB5',
+      x:pos.x, y:String(pos.y+16),
+      'font-size':7, fill:'#8E9BB5',
       'text-anchor':'middle', style:'pointer-events:none'
     });
     zipLbl.textContent = d.zip;
@@ -890,16 +733,13 @@ function buildMap() {
     g.appendChild(zipLbl);
     svg.appendChild(g);
 
-    dotEls[d.zip] = { g:g, dot:dot, ring:ring, glow:glow,
-                      cntLbl:cntLbl, zipLbl:zipLbl,
-                      animR:animR, animO:animO };
+    dotEls[d.zip] = { dot:dot, ring:ring, glow:glow, cntLbl:cntLbl, zipLbl:zipLbl, animR:animR, animO:animO, pos:pos };
 
-    /* Hover events */
     g.addEventListener('mouseenter', function() {
       var cnt = parseInt(dot.getAttribute('data-count'), 10) || 0;
       document.getElementById('tip-zip').textContent   = d.zip;
       document.getElementById('tip-nbhd').textContent  = d.nbhd;
-      document.getElementById('tip-count').textContent = cnt + ' texts';
+      document.getElementById('tip-count').textContent = cnt + ' resource' + (cnt !== 1 ? 's' : '');
       var lbl = currentFilter === 'all' ? 'all categories' :
         CATS.find(function(c) { return c.key === currentFilter; }).label;
       document.getElementById('tip-sub').textContent = lbl;
@@ -908,8 +748,8 @@ function buildMap() {
     g.addEventListener('mousemove', function(e) {
       var rect = wrap.getBoundingClientRect();
       tip.style.display = 'block';
-      tip.style.left    = (e.clientX - rect.left) + 'px';
-      tip.style.top     = (e.clientY - rect.top)  + 'px';
+      tip.style.left = (e.clientX - rect.left) + 'px';
+      tip.style.top  = (e.clientY - rect.top)  + 'px';
     });
     g.addEventListener('mouseleave', function() {
       tip.style.display  = 'none';
@@ -919,92 +759,68 @@ function buildMap() {
 }
 
 function updateMapDots(counts) {
-  var maxCount = 0;
-  ZIP_DATA.forEach(function(d) {
-    if (counts[d.zip] > maxCount) maxCount = counts[d.zip];
-  });
-  if (maxCount === 0) maxCount = 1;
+  var maxCount = 1;
+  ZIP_DATA.forEach(function(d) { if (counts[d.zip] > maxCount) maxCount = counts[d.zip]; });
 
   ZIP_DATA.forEach(function(d) {
     var els = dotEls[d.zip];
     if (!els) return;
     var cnt   = counts[d.zip] || 0;
     var ratio = cnt / maxCount;
-    var r     = cnt > 0 ? 5 + Math.sqrt(cnt) * 1.7 : 4;
-    var op    = cnt > 0 ? 0.45 + ratio * 0.55 : 0.15;
-    var isHot = cnt === maxCount && cnt > 0;
+    var r     = cnt > 0 ? 4 + Math.sqrt(cnt) * 2.2 : 3;
+    var op    = cnt > 0 ? 0.45 + ratio * 0.55 : 0.12;
+    var isHot = (cnt === maxCount && cnt > 0);
 
-    els.dot.setAttribute('r', r);
+    els.dot.setAttribute('r',       r);
     els.dot.setAttribute('opacity', op);
-    els.dot.setAttribute('fill', cnt > 0 ? '#E5A100' : '#243456');
+    els.dot.setAttribute('fill',    cnt > 0 ? '#E5A100' : '#243456');
     els.dot.setAttribute('data-count', cnt);
+    els.ring.setAttribute('r', r + 5);
 
     els.cntLbl.textContent = cnt > 0 ? String(cnt) : '';
-    els.cntLbl.setAttribute('y', String(MAP_POS[d.zip].y + 1));
+    els.cntLbl.setAttribute('y', String(els.pos.y + 1));
+    els.zipLbl.setAttribute('y', String(els.pos.y + r + 10));
 
-    var rStr  = isHot ? String(r + 8)  + ';' + String(r + 16) + ';' + String(r + 8)  : '0;0;0';
-    var opStr = isHot ? '0.7;0.1;0.7' : '0;0;0';
-    els.animR.setAttribute('values', rStr);
-    els.animO.setAttribute('values', opStr);
-
-    els.ring.setAttribute('r', r + 5);
-    els.zipLbl.setAttribute('y', String(MAP_POS[d.zip].y + r + 13));
+    var rVals = isHot ? (r+8)+';'+(r+16)+';'+(r+8) : '0;0;0';
+    var oVals = isHot ? '0.7;0.1;0.7' : '0;0;0';
+    els.animR.setAttribute('values', rVals);
+    els.animO.setAttribute('values', oVals);
   });
 }
 
-/* ── ZIP progress bar list ───────────────────────────────────────────────── */
+/* ── ZIP progress bars ───────────────────────────────────────────────────── */
 function buildZipList(counts, total) {
   var container = document.getElementById('zip-list');
   container.innerHTML = '';
 
-  var sorted = ZIP_DATA.slice().sort(function(a, b) {
-    return counts[b.zip] - counts[a.zip];
-  });
+  var sorted = ZIP_DATA.slice().sort(function(a, b) { return counts[b.zip] - counts[a.zip]; });
   var maxCnt = counts[sorted[0].zip] || 1;
 
-  sorted.forEach(function(d, i) {
+  /* Show top 14 */
+  sorted.slice(0, 14).forEach(function(d, i) {
     var cnt = counts[d.zip] || 0;
     var pct = Math.round((cnt / maxCnt) * 100);
 
-    var row    = document.createElement('div');
-    row.className = 'zip-row';
+    var row   = document.createElement('div');  row.className = 'zip-row';
+    var rank  = document.createElement('div');  rank.className = 'zip-rank'; rank.textContent = '#'+(i+1);
+    var code  = document.createElement('div');  code.className = 'zip-code'; code.textContent = d.zip;
+    var bWrap = document.createElement('div');  bWrap.className = 'zip-bar-wrap';
+    var bFill = document.createElement('div');  bFill.className = 'zip-bar-fill';
+    bFill.style.width   = '0%';
+    bFill.style.opacity = cnt > 0 ? '1' : '0.2';
+    bWrap.appendChild(bFill);
+    var nbhd  = document.createElement('div');  nbhd.className = 'zip-nbhd'; nbhd.textContent = d.nbhd;
+    var cntEl = document.createElement('div');  cntEl.className = 'zip-count'; cntEl.textContent = cnt;
 
-    var rank   = document.createElement('div');
-    rank.className = 'zip-rank';
-    rank.textContent = '#' + (i + 1);
-
-    var code   = document.createElement('div');
-    code.className = 'zip-code';
-    code.textContent = d.zip;
-
-    var wrap   = document.createElement('div');
-    wrap.className = 'zip-bar-wrap';
-    var fill   = document.createElement('div');
-    fill.className = 'zip-bar-fill';
-    fill.style.width = '0%';
-    fill.style.opacity = cnt > 0 ? '1' : '0.2';
-    wrap.appendChild(fill);
-
-    var nbhd   = document.createElement('div');
-    nbhd.className = 'zip-nbhd';
-    nbhd.textContent = d.nbhd;
-
-    var countEl = document.createElement('div');
-    countEl.className = 'zip-count';
-    countEl.textContent = cnt;
-
-    row.appendChild(rank);
-    row.appendChild(code);
-    row.appendChild(wrap);
-    row.appendChild(nbhd);
-    row.appendChild(countEl);
+    row.appendChild(rank); row.appendChild(code); row.appendChild(bWrap);
+    row.appendChild(nbhd); row.appendChild(cntEl);
     container.appendChild(row);
 
-    setTimeout(function() { fill.style.width = pct + '%'; }, 60);
+    setTimeout(function() { bFill.style.width = pct + '%'; }, 60);
   });
 }
 
-/* ── Category bar chart ──────────────────────────────────────────────────── */
+/* ── Category chart ──────────────────────────────────────────────────────── */
 function buildCatChart() {
   var container = document.getElementById('cat-list');
   container.innerHTML = '';
@@ -1015,53 +831,33 @@ function buildCatChart() {
       return s + (CAT_DATA[d.zip] ? CAT_DATA[d.zip][c.key] || 0 : 0);
     }, 0);
   });
-  var grandTotal = CATS.reduce(function(s, c) { return s + catTotals[c.key]; }, 0);
-  var maxVal = CATS.reduce(function(m, c) {
-    return catTotals[c.key] > m ? catTotals[c.key] : m;
-  }, 1);
+  var grandTotal = CATS.reduce(function(s, c) { return s + catTotals[c.key]; }, 0) || 1;
+  var maxVal     = CATS.reduce(function(m, c) { return catTotals[c.key] > m ? catTotals[c.key] : m; }, 1);
 
   CATS.forEach(function(c) {
     var val   = catTotals[c.key];
     var pct   = Math.round((val / maxVal) * 100);
-    var share = grandTotal > 0 ? Math.round((val / grandTotal) * 100) : 0;
-    var isSel = currentFilter === c.key;
+    var share = Math.round((val / grandTotal) * 100);
+    var isSel = (currentFilter === c.key);
 
-    var row   = document.createElement('div');
-    row.className = 'cat-row';
-
-    var icon  = document.createElement('div');
-    icon.className = 'cat-icon';
-    icon.textContent = c.icon;
-
-    var label = document.createElement('div');
-    label.className = 'cat-label';
-    label.textContent = c.label;
+    var row   = document.createElement('div');  row.className = 'cat-row';
+    var icon  = document.createElement('div');  icon.className = 'cat-icon'; icon.textContent = c.icon;
+    var label = document.createElement('div');  label.className = 'cat-label'; label.textContent = c.label;
     if (isSel) { label.style.color = '#F5C842'; label.style.fontWeight = '800'; }
 
-    var bWrap = document.createElement('div');
-    bWrap.className = 'cat-bar-wrap';
-    var bFill = document.createElement('div');
-    bFill.className = 'cat-bar-fill';
+    var bWrap = document.createElement('div');  bWrap.className = 'cat-bar-wrap';
+    var bFill = document.createElement('div');  bFill.className = 'cat-bar-fill';
     bFill.style.width = '0%';
-    if (isSel) {
-      bFill.style.background = 'linear-gradient(to right, #E5A100, #F5C842)';
-    }
+    if (isSel) bFill.style.background = 'linear-gradient(to right, #E5A100, #F5C842)';
+
     bWrap.appendChild(bFill);
 
-    var cntEl = document.createElement('div');
-    cntEl.className = 'cat-count';
-    cntEl.textContent = val;
-    if (isSel) cntEl.style.color = '#F5C842';
+    var cntEl = document.createElement('div');  cntEl.className = 'cat-count'; cntEl.textContent = val;
+    var pctEl = document.createElement('div');  pctEl.className = 'cat-pct';   pctEl.textContent = share + '%';
+    if (isSel) { cntEl.style.color = '#F5C842'; }
 
-    var pctEl = document.createElement('div');
-    pctEl.className = 'cat-pct';
-    pctEl.textContent = share + '%';
-
-    row.appendChild(icon);
-    row.appendChild(label);
-    row.appendChild(bWrap);
-    row.appendChild(cntEl);
-    row.appendChild(pctEl);
+    row.appendChild(icon); row.appendChild(label); row.appendChild(bWrap);
+    row.appendChild(cntEl); row.appendChild(pctEl);
     container.appendChild(row);
 
     setTimeout(function() { bFill.style.width = pct + '%'; }, 60);
