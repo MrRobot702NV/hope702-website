@@ -2,7 +2,11 @@
   "name": "hope702-website",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
+    "express": "^4.22.2",
     "stripe": "^16.0.0"
   },
   "devDependencies": {
