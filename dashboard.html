@@ -564,37 +564,86 @@ function buildMap() {
     svg.appendChild(t);
   }
 
-  var rs = 'rgba(255,255,255,0.10)'; /* surface road */
-  var ri = 'rgba(255,255,255,0.17)'; /* interstate   */
+  var rs  = 'rgba(255,255,255,0.09)';  /* surface arterial  */
+  var ri  = 'rgba(255,255,255,0.16)';  /* freeway           */
+  var ril = 'rgba(255,255,255,0.21)';  /* major interstate  */
 
-  /* Las Vegas Blvd / The Strip — nearly N-S, slight lean east going north */
-  road([[36.060,-115.175],[36.120,-115.168],[36.185,-115.155],[36.295,-115.133]], rs, 1.3);
-  rlb(36.078, -115.185, 'Las Vegas Blvd', 'end');
+  /* ── Freeways ─────────────────────────────────────────────────────────── */
 
-  /* I-15 — diagonal, northwest of the Strip */
-  road([[36.32,-115.300],[36.20,-115.238],[36.09,-115.193],[35.97,-115.168]], ri, 1.8);
-  rlb(36.255, -115.308, 'I-15', 'end');
+  /* I-15: enters from south, passes west of Strip, kinks at Spaghetti Bowl
+     (36.175, -115.175), then runs NW toward Summerlin/Primm direction     */
+  road([[35.97,-115.178],[36.04,-115.191],[36.10,-115.203],
+        [36.155,-115.197],[36.175,-115.175],
+        [36.22,-115.248],[36.32,-115.348]], ril, 1.8);
+  rlb(36.305, -115.353, 'I-15', 'end');
 
-  /* I-215 Beltway — partial loop around the metro, dashed to distinguish */
-  road([[36.270,-115.262],[36.115,-115.330],[35.978,-115.270],[35.978,-115.110],[36.058,-114.995]], ri, 1.5, '5,3');
-  rlb(36.078, -115.340, 'I-215', 'end');
+  /* I-215 Beltway: loops west and south of the valley, dashed line        */
+  road([[36.255,-115.354],[36.18,-115.374],[36.10,-115.372],
+        [35.980,-115.305],[35.975,-115.200],[35.975,-115.100],
+        [36.040,-115.032],[36.075,-115.055]], ri, 1.4, '5,3');
+  rlb(36.093, -115.382, 'I-215', 'end');
 
-  /* East-west surface roads — full width of map */
-  road([[36.212,-115.42],[36.212,-114.88]], rs, 0.9);
-  rlb(36.213, -115.413, 'Lake Mead Blvd', 'start');
+  /* I-515 / US-95 SE: from Spaghetti Bowl southeast toward Henderson      */
+  road([[36.175,-115.175],[36.140,-115.132],
+        [36.080,-115.048],[36.000,-114.990],[35.975,-114.965]], ri, 1.5);
+  rlb(36.055, -115.038, 'I-515/US-95', 'start');
 
-  road([[36.163,-115.42],[36.163,-114.88]], rs, 0.9);
-  rlb(36.164, -115.413, 'Charleston Blvd', 'start');
+  /* US-95 NW: from Spaghetti Bowl northwest toward Summerlin Pkwy area    */
+  road([[36.175,-115.175],[36.200,-115.252],
+        [36.260,-115.350],[36.320,-115.413]], ri, 1.5);
+  rlb(36.262, -115.357, 'US-95', 'end');
 
-  road([[36.148,-115.42],[36.148,-114.88]], rs, 0.85);
-  rlb(36.149, -115.413, 'Sahara Ave', 'start');
+  /* ── N-S arterials ────────────────────────────────────────────────────── */
 
-  road([[36.113,-115.42],[36.113,-114.88]], rs, 0.9);
-  rlb(36.114, -115.413, 'Flamingo Rd', 'start');
+  /* Las Vegas Blvd: north-south center spine, slight NE lean as it runs N */
+  road([[35.975,-115.173],[36.099,-115.172],[36.148,-115.160],
+        [36.170,-115.143],[36.225,-115.132],[36.320,-115.120]], rs, 1.3);
+  rlb(36.082, -115.162, 'Las Vegas Blvd', 'start');
 
-  /* Boulder Highway — diagonal SE through Henderson */
-  road([[36.155,-115.064],[36.060,-115.018],[35.962,-114.990]], rs, 1.1);
-  rlb(36.115, -115.059, 'Boulder Hwy', 'start');
+  /* Rancho Dr: runs N-S west of I-15 through North LV / downtown west     */
+  road([[36.320,-115.213],[36.150,-115.213],[35.990,-115.215]], rs, 0.85);
+  rlb(36.220, -115.220, 'Rancho Dr', 'end');
+
+  /* Decatur Blvd: N-S arterial on the west side of the valley             */
+  road([[36.330,-115.222],[36.050,-115.222],[35.960,-115.223]], rs, 0.85);
+  rlb(36.155, -115.228, 'Decatur Blvd', 'end');
+
+  /* Maryland Pkwy: runs N-S through UNLV / downtown east corridor          */
+  road([[36.280,-115.134],[36.180,-115.134],
+        [36.060,-115.131],[35.965,-115.130]], rs, 0.85);
+  rlb(36.079, -115.140, 'Maryland Pkwy', 'end');
+
+  /* Eastern Ave: N-S east of downtown / east Las Vegas                    */
+  road([[36.280,-115.100],[36.050,-115.096],[35.965,-115.094]], rs, 0.85);
+  rlb(36.218, -115.107, 'Eastern Ave', 'end');
+
+  /* Boulder Hwy (NV-582): diagonal SE from downtown toward Henderson       */
+  road([[36.163,-115.098],[36.095,-115.050],
+        [36.035,-115.008],[35.975,-114.968]], rs, 1.0);
+  rlb(36.148, -115.087, 'Boulder Hwy', 'end');
+
+  /* ── E-W arterials (user-specified lat coordinates) ───────────────────── */
+
+  road([[36.237,-115.42],[36.237,-114.88]], rs, 0.8);
+  rlb(36.238, -115.413, 'Craig Rd', 'start');
+
+  road([[36.198,-115.42],[36.198,-114.88]], rs, 0.85);
+  rlb(36.199, -115.413, 'Lake Mead Blvd', 'start');
+
+  road([[36.159,-115.42],[36.159,-114.88]], rs, 0.85);
+  rlb(36.160, -115.413, 'Charleston Blvd', 'start');
+
+  road([[36.144,-115.42],[36.144,-114.88]], rs, 0.8);
+  rlb(36.145, -115.413, 'Sahara Ave', 'start');
+
+  road([[36.115,-115.42],[36.115,-114.88]], rs, 0.85);
+  rlb(36.116, -115.413, 'Flamingo Rd', 'start');
+
+  road([[36.099,-115.42],[36.099,-114.88]], rs, 0.8);
+  rlb(36.100, -115.413, 'Tropicana Ave', 'start');
+
+  road([[36.072,-115.42],[36.072,-114.88]], rs, 0.8);
+  rlb(36.073, -115.413, 'Sunset Rd', 'start');
 
   /* Compass */
   var nT = svgEl('text', { x:483,y:18,'font-size':9,fill:'#243456','text-anchor':'middle' });
