@@ -117,6 +117,12 @@
     .rural-strip-title { font-size:0.62rem; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin-bottom:8px; }
     .rural-tags { display:flex; flex-wrap:wrap; gap:5px; }
     .rural-tag  { background:rgba(229,161,0,0.07); border:1px solid rgba(229,161,0,0.15); border-radius:5px; padding:3px 9px; font-size:0.67rem; color:var(--gold-dim); white-space:nowrap; }
+    /* Clickable rural chips: fly the map to that town's marker. */
+    button.rural-tag { font-family:inherit; cursor:pointer; transition:background 0.15s,color 0.15s,border-color 0.15s; }
+    button.rural-tag:hover { background:rgba(229,161,0,0.16); border-color:rgba(229,161,0,0.4); color:var(--gold-lt); }
+    /* "Metro view" reset control on the map. */
+    .metro-reset { background:var(--bg-light); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:var(--text); cursor:pointer; font-family:inherit; font-size:0.72rem; font-weight:600; padding:6px 12px; box-shadow:0 2px 10px rgba(0,0,0,0.4); transition:background 0.15s,color 0.15s; }
+    .metro-reset:hover { background:#2C3E66; color:#fff; }
 
     /* ── ZIP LIST ────────────────────────────────────────────────────── */
     .zip-list { display:flex; flex-direction:column; gap:9px; }
@@ -228,7 +234,7 @@
         <div id="lv-map"></div>
         <!-- Rural outposts below map -->
         <div class="rural-strip">
-          <div class="rural-strip-title">Rural &amp; outlying ZIPs — counted in totals, not shown on map</div>
+          <div class="rural-strip-title">Rural &amp; outlying ZIPs — tap to fly there</div>
           <div class="rural-tags" id="rural-tags"></div>
         </div>
         <!-- Mobile pet outreach orgs (no fixed site) -->
@@ -461,9 +467,12 @@ function refresh() {
 function buildRuralStrip() {
   var container = document.getElementById('rural-tags');
   RURAL_DATA.forEach(function(d) {
-    var tag = document.createElement('span');
+    var tag = document.createElement('button');
+    tag.type = 'button';
     tag.className = 'rural-tag';
     tag.textContent = d.zip + ' — ' + d.nbhd;
+    tag.title = 'Fly to ' + d.nbhd;
+    tag.onclick = function() { flyToZip(d.zip); };
     container.appendChild(tag);
   });
 }
@@ -505,14 +514,16 @@ function updateStats(counts, total) {
 
 /* ── Leaflet map — real tiles + interactive gold markers ─────────────────── */
 var map = null;
+var METRO_CENTER = [36.15, -115.14];   // Las Vegas valley
+var METRO_ZOOM   = 11;
 
 function buildMap() {
   if (mapBuilt) return;
   mapBuilt = true;
 
   map = L.map('lv-map', {
-    center: [36.15, -115.14],   // Las Vegas valley
-    zoom: 11,
+    center: METRO_CENTER,
+    zoom: METRO_ZOOM,
     scrollWheelZoom: true       // +/- buttons come from the default zoom control
   });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -521,7 +532,21 @@ function buildMap() {
     maxZoom: 19
   }).addTo(map);
 
-  METRO_DATA.forEach(function(d) {
+  /* "Metro view" reset — flies back to the default valley framing. */
+  var resetCtl = L.control({ position: 'topright' });
+  resetCtl.onAdd = function() {
+    var btn = L.DomUtil.create('button', 'metro-reset');
+    btn.type = 'button';
+    btn.textContent = 'Metro view';
+    L.DomEvent.disableClickPropagation(btn);
+    btn.onclick = function() { map.flyTo(METRO_CENTER, METRO_ZOOM); };
+    return btn;
+  };
+  resetCtl.addTo(map);
+
+  /* Every ZIP gets a marker — metro AND rural. The initial view still frames
+     the metro; rural towns are reached by pan/zoom or the strip chips. */
+  ZIP_DATA.forEach(function(d) {
     var m = L.circleMarker([d.lat, d.lng], {
       radius: 4,
       fillColor: '#E5A100',
@@ -540,12 +565,25 @@ function buildMap() {
   });
 }
 
+/* Fly to a ZIP's marker and open its popup once the flight lands. */
+function flyToZip(zip) {
+  var els = dotEls[zip];
+  if (!els || !map) return;
+  var ll = els.marker.getLatLng();
+  if (map.getCenter().distanceTo(ll) < 100) {   // already there — just pop it
+    els.marker.openPopup();
+    return;
+  }
+  map.once('moveend', function() { els.marker.openPopup(); });
+  map.flyTo(ll, 12);
+}
+
 /* ── Update marker sizes/labels/popups on filter change ──────────────────── */
 function updateMapDots(counts) {
   var maxCount = 1;
-  METRO_DATA.forEach(function(d) { if (counts[d.zip] > maxCount) maxCount = counts[d.zip]; });
+  ZIP_DATA.forEach(function(d) { if (counts[d.zip] > maxCount) maxCount = counts[d.zip]; });
 
-  METRO_DATA.forEach(function(d) {
+  ZIP_DATA.forEach(function(d) {
     var els = dotEls[d.zip]; if (!els) return;
     var cnt   = counts[d.zip] || 0;
     var ratio = cnt / maxCount;
