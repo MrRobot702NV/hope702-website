@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HOPE 702 — Staff Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -85,12 +89,28 @@
     .panel     { background:var(--bg-light); border:1px solid var(--border); border-radius:14px; padding:22px; }
     .panel-title { font-size:0.67rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:16px; }
 
-    /* ── MAP ─────────────────────────────────────────────────────────── */
-    .map-wrap { position:relative; }
-    .map-tip  { position:absolute; background:var(--bg-dark); border:1px solid rgba(229,161,0,0.25); border-radius:10px; padding:11px 16px; pointer-events:none; font-size:0.8rem; line-height:1.7; z-index:20; white-space:nowrap; box-shadow:0 10px 28px rgba(0,0,0,0.6); transform:translate(14px,-50%); display:none; }
-    .tip-zip   { font-weight:800; font-size:1rem; color:var(--gold); }
-    .tip-count { font-size:1.1rem; font-weight:800; color:var(--gold-lt); }
-    .tip-sub   { font-size:0.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:1.2px; }
+    /* ── MAP (Leaflet, CartoDB dark tiles) ───────────────────────────── */
+    #lv-map { height:400px; border-radius:8px; background:var(--bg-dark); }
+    /* Gold ZIP markers: subtle glow behind each dot. */
+    .zip-marker { filter:drop-shadow(0 0 5px rgba(229,161,0,0.55)); }
+    /* Permanent count label centered on a marker — text only, no bubble. */
+    .count-tip { background:none; border:none; box-shadow:none; color:#141F38; font-weight:800; font-size:11px; padding:0; }
+    .count-tip::before { display:none; }
+    /* Popup restyled to the dashboard's navy/gold theme. */
+    .leaflet-popup-content-wrapper { background:var(--bg-dark); color:var(--text); border:1px solid rgba(229,161,0,0.25); border-radius:10px; box-shadow:0 10px 28px rgba(0,0,0,0.6); }
+    .leaflet-popup-tip { background:var(--bg-dark); }
+    .leaflet-popup-content { margin:11px 16px; line-height:1.55; font-family:inherit; }
+    .pp-zip   { font-weight:800; font-size:1rem; color:var(--gold); }
+    .pp-nbhd  { color:var(--text-dim); font-size:0.75rem; }
+    .pp-count { font-size:1.05rem; font-weight:800; color:var(--gold-lt); }
+    .pp-sub   { font-size:0.66rem; color:var(--muted); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px; }
+    .pp-row   { display:flex; justify-content:space-between; gap:18px; font-size:0.76rem; color:var(--text-dim); }
+    .pp-row b { color:var(--gold); }
+    /* Leaflet controls in dashboard colors. */
+    .leaflet-control-zoom a { background:var(--bg-light); color:var(--text); border-color:rgba(255,255,255,0.15); }
+    .leaflet-control-zoom a:hover { background:#2C3E66; color:#fff; }
+    .leaflet-control-attribution { background:rgba(20,31,56,0.8); color:var(--muted); }
+    .leaflet-control-attribution a { color:var(--gold-dim); }
 
     /* ── RURAL STRIP ─────────────────────────────────────────────────── */
     .rural-strip { margin-top:14px; padding-top:14px; border-top:1px solid var(--border); }
@@ -205,19 +225,16 @@
           Metro Heatmap &mdash; Las Vegas / Henderson &nbsp;
           <span id="map-hint" style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">hover a dot for details</span>
         </div>
-        <div class="map-wrap" id="map-wrap">
-          <svg id="map-svg" viewBox="0 0 500 340" width="100%" style="display:block;border-radius:8px"></svg>
-          <div class="map-tip" id="map-tip">
-            <div class="tip-zip"   id="tip-zip"></div>
-            <div style="color:var(--text-dim);font-size:0.75rem" id="tip-nbhd"></div>
-            <div class="tip-count" id="tip-count"></div>
-            <div class="tip-sub"   id="tip-sub"></div>
-          </div>
-        </div>
+        <div id="lv-map"></div>
         <!-- Rural outposts below map -->
         <div class="rural-strip">
-          <div class="rural-strip-title">Rural outposts — cooling resources only, not shown on map</div>
+          <div class="rural-strip-title">Rural &amp; outlying ZIPs — counted in totals, not shown on map</div>
           <div class="rural-tags" id="rural-tags"></div>
+        </div>
+        <!-- Mobile pet outreach orgs (no fixed site) -->
+        <div class="rural-strip">
+          <div class="rural-strip-title">Mobile &amp; citywide — pet outreach, comes to you · not in ZIP counts</div>
+          <div class="rural-tags" id="mobile-tags"></div>
         </div>
       </div>
 
@@ -242,25 +259,9 @@
 /* ── Rural vs Metro split ────────────────────────────────────────────────── */
 var RURAL_SET = {
   '89004':1,'89124':1,'89018':1,'89025':1,
-  '89040':1,'89007':1,'89027':1,'89046':1
+  '89040':1,'89007':1,'89027':1,'89046':1,
+  '89005':1,'89019':1,'89029':1
 };
-
-/* ── Map projection — zoomed into Las Vegas/Henderson metro ──────────────── */
-/* Bounds chosen to give ~500×340 px of separation across the urban core.    */
-var BOUNDS = {
-  minLat: 35.92, maxLat: 36.34,
-  minLng: -115.42, maxLng: -114.88
-};
-var SVG_W = 500, SVG_H = 340, SVG_PAD = 18;
-
-function toSVG(lat, lng) {
-  var usableW = SVG_W - SVG_PAD * 2;
-  var usableH = SVG_H - SVG_PAD * 2;
-  return {
-    x: (lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng) * usableW + SVG_PAD,
-    y: (BOUNDS.maxLat - lat) / (BOUNDS.maxLat - BOUNDS.minLat) * usableH + SVG_PAD
-  };
-}
 
 /* ── ZIP database — real geocoded centroids ──────────────────────────────── */
 var ZIP_DATA = [
@@ -293,6 +294,10 @@ var ZIP_DATA = [
   { zip:'89148', nbhd:'Southwest',          lat:36.082, lng:-115.258 },
   { zip:'89139', nbhd:'Southwest LV',       lat:36.016, lng:-115.195 },
   { zip:'89141', nbhd:'Southern Highlands', lat:36.008, lng:-115.210 },
+  { zip:'89113', nbhd:'Spring Vly SW',      lat:36.061, lng:-115.262 },
+  { zip:'89130', nbhd:'Centennial S',       lat:36.256, lng:-115.228 },
+  { zip:'89131', nbhd:'Centennial Hills',   lat:36.305, lng:-115.240 },
+  { zip:'89142', nbhd:'Sunrise Manor',      lat:36.147, lng:-115.025 },
   { zip:'89030', nbhd:'North Las Vegas',    lat:36.213, lng:-115.131 },
   { zip:'89031', nbhd:'N Las Vegas N',      lat:36.255, lng:-115.117 },
   { zip:'89032', nbhd:'N Las Vegas W',      lat:36.214, lng:-115.160 },
@@ -301,6 +306,8 @@ var ZIP_DATA = [
   { zip:'89052', nbhd:'Henderson North',    lat:36.005, lng:-115.103 },
   { zip:'89002', nbhd:'Henderson SE',       lat:35.980, lng:-114.975 },
   { zip:'89011', nbhd:'Henderson East',     lat:36.038, lng:-114.985 },
+  { zip:'89012', nbhd:'Green Valley W',     lat:36.012, lng:-115.045 },
+  { zip:'89044', nbhd:'Henderson S',        lat:35.955, lng:-115.070 },
   /* Rural — shown in strip, not on map */
   { zip:'89004', nbhd:'Blue Diamond',       lat:36.050, lng:-115.425 },
   { zip:'89124', nbhd:'Mountain Springs',   lat:36.064, lng:-115.455 },
@@ -309,51 +316,68 @@ var ZIP_DATA = [
   { zip:'89040', nbhd:'Overton',            lat:36.542, lng:-114.445 },
   { zip:'89007', nbhd:'Bunkerville',        lat:36.794, lng:-114.130 },
   { zip:'89027', nbhd:'Mesquite',           lat:36.806, lng:-114.067 },
-  { zip:'89046', nbhd:'Searchlight',        lat:35.468, lng:-114.918 }
+  { zip:'89046', nbhd:'Searchlight',        lat:35.468, lng:-114.918 },
+  { zip:'89005', nbhd:'Boulder City',       lat:35.978, lng:-114.834 },
+  { zip:'89019', nbhd:'Sandy Valley',       lat:35.760, lng:-115.555 },
+  { zip:'89029', nbhd:'Laughlin',           lat:35.135, lng:-114.648 }
 ];
 
 var METRO_DATA = ZIP_DATA.filter(function(d) { return !RURAL_SET[d.zip]; });
 var RURAL_DATA = ZIP_DATA.filter(function(d) { return  RURAL_SET[d.zip]; });
 
-/* ── Resource counts from HOPE 702 database ──────────────────────────────── */
+/* PET rows in the database with no ZIP — mobile outreach, no fixed site */
+var MOBILE_PET_ORGS = ['Street Dogz', 'Vegas Dog Rescue', 'PALNV'];
+
+/* ── Resource counts from HOPE 702 database ──────────────────────────────────
+   Generated from the "HOPE 702 Resource Database" Google Sheet (129 rows with
+   a ZIP; 4 rows without one are excluded). Sheet "Category" values map to
+   chart keys with EXACT strings, case included:
+     'SHELTER' → shelters   'FOOD' → food
+     'COOL' + 'Library' → cooling   'PET' → pets                              */
 var CAT_DATA = {
-  '89101': { shelters:4, food:4, cooling:2, pets:0 },
-  '89106': { shelters:4, food:3, cooling:2, pets:0 },
-  '89102': { shelters:3, food:2, cooling:2, pets:0 },
-  '89104': { shelters:3, food:2, cooling:1, pets:0 },
-  '89108': { shelters:2, food:2, cooling:2, pets:0 },
-  '89107': { shelters:2, food:2, cooling:1, pets:0 },
-  '89109': { shelters:0, food:2, cooling:3, pets:0 },
-  '89119': { shelters:2, food:2, cooling:1, pets:0 },
-  '89110': { shelters:2, food:2, cooling:0, pets:0 },
-  '89103': { shelters:0, food:2, cooling:1, pets:0 },
-  '89115': { shelters:1, food:1, cooling:1, pets:0 },
-  '89121': { shelters:1, food:2, cooling:0, pets:0 },
-  '89118': { shelters:0, food:2, cooling:1, pets:0 },
-  '89120': { shelters:1, food:2, cooling:0, pets:0 },
-  '89123': { shelters:1, food:1, cooling:1, pets:0 },
-  '89122': { shelters:0, food:2, cooling:0, pets:0 },
-  '89156': { shelters:0, food:1, cooling:0, pets:0 },
-  '89169': { shelters:0, food:1, cooling:1, pets:0 },
-  '89128': { shelters:0, food:2, cooling:1, pets:0 },
-  '89129': { shelters:0, food:1, cooling:1, pets:0 },
-  '89134': { shelters:0, food:1, cooling:1, pets:0 },
+  '89101': { shelters:3, food:5, cooling:2, pets:2 },
+  '89106': { shelters:3, food:2, cooling:1, pets:0 },
+  '89102': { shelters:0, food:2, cooling:1, pets:0 },
+  '89104': { shelters:2, food:3, cooling:0, pets:0 },
+  '89108': { shelters:0, food:4, cooling:0, pets:0 },
+  '89107': { shelters:1, food:1, cooling:0, pets:0 },
+  '89109': { shelters:0, food:0, cooling:0, pets:0 },
+  '89119': { shelters:4, food:0, cooling:2, pets:0 },
+  '89110': { shelters:0, food:0, cooling:1, pets:0 },
+  '89103': { shelters:0, food:1, cooling:1, pets:0 },
+  '89115': { shelters:0, food:3, cooling:1, pets:0 },
+  '89121': { shelters:2, food:4, cooling:0, pets:1 },
+  '89118': { shelters:0, food:1, cooling:0, pets:2 },
+  '89120': { shelters:1, food:3, cooling:0, pets:0 },
+  '89123': { shelters:0, food:0, cooling:1, pets:0 },
+  '89122': { shelters:0, food:1, cooling:2, pets:0 },
+  '89156': { shelters:0, food:0, cooling:0, pets:0 },
+  '89169': { shelters:2, food:0, cooling:0, pets:0 },
+  '89128': { shelters:0, food:0, cooling:1, pets:0 },
+  '89129': { shelters:0, food:0, cooling:0, pets:0 },
+  '89134': { shelters:0, food:0, cooling:1, pets:0 },
   '89144': { shelters:0, food:1, cooling:0, pets:0 },
   '89149': { shelters:0, food:1, cooling:0, pets:0 },
-  '89146': { shelters:1, food:1, cooling:1, pets:0 },
-  '89117': { shelters:0, food:1, cooling:0, pets:0 },
-  '89147': { shelters:0, food:1, cooling:0, pets:0 },
-  '89148': { shelters:0, food:1, cooling:0, pets:0 },
-  '89139': { shelters:0, food:1, cooling:0, pets:0 },
-  '89141': { shelters:0, food:1, cooling:0, pets:0 },
-  '89030': { shelters:2, food:2, cooling:1, pets:0 },
-  '89031': { shelters:2, food:1, cooling:1, pets:0 },
-  '89032': { shelters:1, food:2, cooling:1, pets:0 },
-  '89014': { shelters:1, food:1, cooling:1, pets:0 },
-  '89015': { shelters:1, food:1, cooling:1, pets:0 },
-  '89052': { shelters:1, food:1, cooling:1, pets:0 },
+  '89146': { shelters:1, food:1, cooling:1, pets:1 },
+  '89117': { shelters:0, food:1, cooling:1, pets:0 },
+  '89147': { shelters:0, food:0, cooling:0, pets:0 },
+  '89148': { shelters:0, food:0, cooling:0, pets:0 },
+  '89139': { shelters:0, food:0, cooling:0, pets:0 },
+  '89141': { shelters:0, food:0, cooling:0, pets:0 },
+  '89113': { shelters:0, food:0, cooling:1, pets:0 },
+  '89130': { shelters:0, food:2, cooling:0, pets:1 },
+  '89131': { shelters:0, food:1, cooling:1, pets:0 },
+  '89142': { shelters:0, food:0, cooling:1, pets:0 },
+  '89030': { shelters:0, food:5, cooling:2, pets:1 },
+  '89031': { shelters:0, food:0, cooling:0, pets:0 },
+  '89032': { shelters:0, food:7, cooling:3, pets:0 },
+  '89014': { shelters:0, food:1, cooling:1, pets:0 },
+  '89015': { shelters:1, food:4, cooling:2, pets:0 },
+  '89052': { shelters:0, food:0, cooling:0, pets:0 },
   '89002': { shelters:0, food:1, cooling:0, pets:0 },
   '89011': { shelters:0, food:1, cooling:0, pets:0 },
+  '89012': { shelters:0, food:0, cooling:1, pets:0 },
+  '89044': { shelters:0, food:0, cooling:1, pets:0 },
   '89004': { shelters:0, food:0, cooling:1, pets:0 },
   '89124': { shelters:0, food:0, cooling:1, pets:0 },
   '89018': { shelters:0, food:0, cooling:1, pets:0 },
@@ -361,7 +385,10 @@ var CAT_DATA = {
   '89040': { shelters:0, food:0, cooling:1, pets:0 },
   '89007': { shelters:0, food:0, cooling:1, pets:0 },
   '89027': { shelters:0, food:0, cooling:1, pets:0 },
-  '89046': { shelters:0, food:0, cooling:1, pets:0 }
+  '89046': { shelters:0, food:0, cooling:1, pets:0 },
+  '89005': { shelters:0, food:3, cooling:0, pets:0 },
+  '89019': { shelters:0, food:0, cooling:2, pets:0 },
+  '89029': { shelters:0, food:1, cooling:2, pets:0 }
 };
 
 var CATS = [
@@ -412,16 +439,12 @@ function countFor(zip) {
   if (currentFilter === 'all') return d.shelters + d.food + d.cooling + d.pets;
   return d[currentFilter] || 0;
 }
-function totalAllCount(zip) {
-  var d = CAT_DATA[zip]; if (!d) return 0;
-  return d.shelters + d.food + d.cooling + d.pets;
-}
-
 /* ── Init ────────────────────────────────────────────────────────────────── */
 function initDashboard() {
   document.getElementById('hdr-date').textContent =
     new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
   buildRuralStrip();
+  buildMobileStrip();
   buildMap();
   refresh();
 }
@@ -441,6 +464,16 @@ function buildRuralStrip() {
     var tag = document.createElement('span');
     tag.className = 'rural-tag';
     tag.textContent = d.zip + ' — ' + d.nbhd;
+    container.appendChild(tag);
+  });
+}
+
+function buildMobileStrip() {
+  var container = document.getElementById('mobile-tags');
+  MOBILE_PET_ORGS.forEach(function(name) {
+    var tag = document.createElement('span');
+    tag.className = 'rural-tag';
+    tag.textContent = '🐾 ' + name;
     container.appendChild(tag);
   });
 }
@@ -470,247 +503,44 @@ function updateStats(counts, total) {
   document.getElementById('s-hot-note').textContent = hot.nbhd + ' · ' + counts[hot.zip] + ' resources';
 }
 
-/* ── SVG helpers ─────────────────────────────────────────────────────────── */
-function svgEl(tag, attrs) {
-  var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-  Object.keys(attrs).forEach(function(k) { el.setAttribute(k, attrs[k]); });
-  return el;
-}
+/* ── Leaflet map — real tiles + interactive gold markers ─────────────────── */
+var map = null;
 
-/* ── Collision resolution ────────────────────────────────────────────────── */
-/* Runs once at map build time using max (all-filter) radii.                  */
-/* Dots are then fixed at these positions; smaller filters shrink dots only.  */
-function dotRadius(totalCount) {
-  return totalCount > 0 ? 5 + Math.sqrt(totalCount) * 1.9 : 4;
-}
-
-function resolveCollisions(positions, minGap) {
-  for (var iter = 0; iter < 180; iter++) {
-    for (var i = 0; i < positions.length; i++) {
-      for (var j = i + 1; j < positions.length; j++) {
-        var dx = positions[j].x - positions[i].x;
-        var dy = positions[j].y - positions[i].y;
-        var d  = Math.sqrt(dx*dx + dy*dy) || 0.1;
-        var needed = positions[i].maxR + positions[j].maxR + minGap;
-        if (d < needed) {
-          var push = (needed - d) * 0.52; /* slightly over half to converge */
-          var nx = dx / d, ny = dy / d;
-          positions[i].x -= nx * push * 0.5;
-          positions[i].y -= ny * push * 0.5;
-          positions[j].x += nx * push * 0.5;
-          positions[j].y += ny * push * 0.5;
-        }
-      }
-    }
-  }
-  /* Clamp to SVG bounds with radius padding */
-  positions.forEach(function(p) {
-    var pad = p.maxR + 2;
-    p.x = Math.max(SVG_PAD + pad, Math.min(SVG_W - SVG_PAD - pad, p.x));
-    p.y = Math.max(SVG_PAD + pad, Math.min(SVG_H - SVG_PAD - pad, p.y));
-  });
-}
-
-/* ── Build map ───────────────────────────────────────────────────────────── */
 function buildMap() {
   if (mapBuilt) return;
   mapBuilt = true;
 
-  var svg  = document.getElementById('map-svg');
-  var wrap = document.getElementById('map-wrap');
-  var tip  = document.getElementById('map-tip');
-
-  /* Background */
-  svg.appendChild(svgEl('rect', { width:SVG_W, height:SVG_H, fill:'#141F38', rx:8 }));
-
-  /* Grid */
-  [100,200,300,400].forEach(function(x) {
-    svg.appendChild(svgEl('line', { x1:x,y1:0,x2:x,y2:SVG_H, stroke:'rgba(255,255,255,0.04)','stroke-width':1 }));
+  map = L.map('lv-map', {
+    center: [36.15, -115.14],   // Las Vegas valley
+    zoom: 11,
+    scrollWheelZoom: true       // +/- buttons come from the default zoom control
   });
-  [68,136,204,272].forEach(function(y) {
-    svg.appendChild(svgEl('line', { x1:0,y1:y,x2:SVG_W,y2:y, stroke:'rgba(255,255,255,0.04)','stroke-width':1 }));
-  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
 
-  /* Region labels */
-  function rLbl(lat, lng, label) {
-    var p = toSVG(lat, lng);
-    var t = svgEl('text', { x:p.x, y:p.y, 'font-size':7.5, fill:'rgba(255,255,255,0.12)',
-      'text-anchor':'middle', 'font-style':'italic', style:'pointer-events:none;letter-spacing:0.08em' });
-    t.textContent = label;
-    svg.appendChild(t);
-  }
-  rLbl(36.19,  -115.15,  'LAS VEGAS');
-  rLbl(36.22,  -115.15,  'NORTH LV');
-  rLbl(36.04,  -115.04,  'HENDERSON');
-  rLbl(36.19,  -115.27,  'SUMMERLIN');
-
-  /* ── Road network — subtle background, drawn before dots ── */
-  /* Helper: draw a polyline from array of [lat,lng] pairs      */
-  function road(pts, stroke, width, dash) {
-    var d = pts.map(function(p, i) {
-      var s = toSVG(p[0], p[1]);
-      return (i === 0 ? 'M' : 'L') + s.x.toFixed(1) + ',' + s.y.toFixed(1);
-    }).join(' ');
-    var attrs = { d:d, fill:'none', stroke:stroke, 'stroke-width':String(width), 'stroke-linecap':'round', 'stroke-linejoin':'round' };
-    if (dash) attrs['stroke-dasharray'] = dash;
-    svg.appendChild(svgEl('path', attrs));
-  }
-  function rlb(lat, lng, text, anchor) {
-    var p = toSVG(lat, lng);
-    var t = svgEl('text', { x:p.x.toFixed(1), y:p.y.toFixed(1), 'font-size':'6.5',
-      fill:'rgba(255,255,255,0.22)', 'text-anchor':anchor||'start',
-      'font-style':'italic', style:'pointer-events:none' });
-    t.textContent = text;
-    svg.appendChild(t);
-  }
-
-  var rs = 'rgba(255,255,255,0.10)'; /* grid street  */
-  var rp = 'rgba(255,255,255,0.16)'; /* LV Blvd (slightly brighter) */
-
-  /* Rotated label for N-S roads — anchored near top, reads top-to-bottom */
-  function rlbV(lng, text, primary) {
-    var p = toSVG(36.315, lng);
-    var t = svgEl('text', {
-      x: p.x.toFixed(1), y: p.y.toFixed(1),
-      'font-size': '6.5',
-      fill: primary ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.20)',
-      'text-anchor': 'start',
-      'font-style': 'italic',
-      style: 'pointer-events:none',
-      transform: 'rotate(-90,' + p.x.toFixed(1) + ',' + p.y.toFixed(1) + ')'
-    });
-    t.textContent = text;
-    svg.appendChild(t);
-  }
-
-  /* ── Perfectly horizontal E-W streets ──────────────────────────────────
-     Each line uses a fixed lat → toSVG produces identical y for both
-     endpoints → guaranteed pixel-perfect horizontal line.                 */
-  [
-    [36.237, 'Craig Rd',        rs,  0.75],
-    [36.198, 'Lake Mead Blvd',  rs,  0.85],
-    [36.159, 'Charleston Blvd', rs,  0.85],
-    [36.144, 'Sahara Ave',      rs,  0.75],
-    [36.115, 'Flamingo Rd',     rs,  0.85],
-    [36.099, 'Tropicana Ave',   rs,  0.75],
-    [36.072, 'Sunset Rd',       rs,  0.75],
-  ].forEach(function(r) {
-    road([[r[0], -115.42], [r[0], -114.88]], r[2], r[3]);
-    rlb(r[0] + 0.001, -115.413, r[1], 'start');
-  });
-
-  /* ── Perfectly vertical N-S streets ────────────────────────────────────
-     Each line uses a fixed lng → toSVG produces identical x for both
-     endpoints → guaranteed pixel-perfect vertical line.                   */
-  [
-    [-115.222, 'Decatur Blvd',   rs,  0.85, false],
-    [-115.213, 'Rancho Dr',      rs,  0.85, false],
-    [-115.160, 'Las Vegas Blvd', rp,  1.3,  true ],
-    [-115.134, 'Maryland Pkwy',  rs,  0.85, false],
-    [-115.097, 'Eastern Ave',    rs,  0.85, false],
-    [-115.062, 'Boulder Hwy',    rs,  0.85, false],
-  ].forEach(function(r) {
-    road([[36.34, r[0]], [35.92, r[0]]], r[2], r[3]);
-    rlbV(r[0], r[1], r[4]);
-  });
-
-  /* Compass */
-  var nT = svgEl('text', { x:483,y:18,'font-size':9,fill:'#243456','text-anchor':'middle' });
-  nT.textContent = 'N'; svg.appendChild(nT);
-  svg.appendChild(svgEl('line', { x1:483,y1:21,x2:483,y2:30, stroke:'#243456','stroke-width':1.5 }));
-
-  /* ── Shared hover label (shows ZIP on dot hover) ── */
-  var hoverG    = svgEl('g', { style:'pointer-events:none' });
-  var hoverRect = svgEl('rect', { rx:3, fill:'rgba(20,31,56,0.92)', stroke:'rgba(229,161,0,0.45)', 'stroke-width':1 });
-  var hoverTxt  = svgEl('text', { 'font-size':8.5, fill:'#F5C842', 'font-weight':800, 'text-anchor':'middle', 'dominant-baseline':'middle' });
-  hoverG.appendChild(hoverRect);
-  hoverG.appendChild(hoverTxt);
-  hoverG.style.display = 'none';
-
-  /* ── Compute initial positions from lat/lng ── */
-  var positions = METRO_DATA.map(function(d) {
-    var p  = toSVG(d.lat, d.lng);
-    var mc = totalAllCount(d.zip);
-    return { zip:d.zip, x:p.x, y:p.y, maxR:dotRadius(mc) };
-  });
-
-  /* ── Resolve collisions — guarantees no dot overlap at max radius ── */
-  resolveCollisions(positions, 4);
-
-  /* Store final positions */
-  var posMap = {};
-  positions.forEach(function(p) { posMap[p.zip] = p; });
-
-  /* ── Create SVG elements for each metro ZIP ── */
   METRO_DATA.forEach(function(d) {
-    var fp = posMap[d.zip];
-    var g  = svgEl('g', { style:'cursor:pointer' });
-
-    /* Pulsing glow ring (hottest ZIP only — toggled in updateMapDots) */
-    var glow  = svgEl('circle', { cx:fp.x, cy:fp.y, r:0, fill:'none', stroke:'#F5C842', 'stroke-width':2, opacity:0 });
-    var animR = svgEl('animate', { attributeName:'r',       values:'0;0;0', dur:'2s', repeatCount:'indefinite' });
-    var animO = svgEl('animate', { attributeName:'opacity', values:'0;0;0', dur:'2s', repeatCount:'indefinite' });
-    glow.appendChild(animR); glow.appendChild(animO);
-
-    /* Hover ring */
-    var ring = svgEl('circle', { cx:fp.x, cy:fp.y, r:fp.maxR+6, fill:'none',
-      stroke:'rgba(245,200,66,0.5)', 'stroke-width':1.5, style:'display:none' });
-
-    /* Main dot */
-    var dot = svgEl('circle', { cx:fp.x, cy:fp.y, r:fp.maxR, fill:'#E5A100', opacity:0.15 });
-
-    /* Count label inside dot */
-    var cntLbl = svgEl('text', {
-      x:fp.x, y:String(fp.y+1), 'font-size':7.5, fill:'#141F38',
-      'text-anchor':'middle', 'dominant-baseline':'middle',
-      'font-weight':800, style:'pointer-events:none'
-    });
-
-    g.appendChild(glow); g.appendChild(ring); g.appendChild(dot); g.appendChild(cntLbl);
-    svg.appendChild(g);
-
-    dotEls[d.zip] = { dot:dot, ring:ring, glow:glow, cntLbl:cntLbl, animR:animR, animO:animO, fp:fp };
-
-    /* Hover events */
-    g.addEventListener('mouseenter', function() {
-      var cnt = parseInt(dot.getAttribute('data-count'), 10) || 0;
-      document.getElementById('tip-zip').textContent   = d.zip;
-      document.getElementById('tip-nbhd').textContent  = d.nbhd;
-      document.getElementById('tip-count').textContent = cnt + ' resource' + (cnt!==1?'s':'');
-      var lbl = currentFilter==='all' ? 'all categories' :
-        CATS.find(function(c){return c.key===currentFilter;}).label;
-      document.getElementById('tip-sub').textContent = lbl;
-      ring.style.display = '';
-      /* Show hover ZIP label above dot */
-      var r = parseFloat(dot.getAttribute('r'));
-      hoverTxt.textContent = d.zip;
-      var tw = 38; /* fixed width for 5-digit ZIP */
-      hoverRect.setAttribute('x',      fp.x - tw/2 - 2);
-      hoverRect.setAttribute('y',      fp.y - r - 20);
-      hoverRect.setAttribute('width',  tw + 4);
-      hoverRect.setAttribute('height', 15);
-      hoverTxt.setAttribute('x', fp.x);
-      hoverTxt.setAttribute('y', fp.y - r - 12.5);
-      hoverG.style.display = '';
-    });
-    g.addEventListener('mousemove', function(e) {
-      var rect = wrap.getBoundingClientRect();
-      tip.style.display = 'block';
-      tip.style.left    = (e.clientX - rect.left) + 'px';
-      tip.style.top     = (e.clientY - rect.top)  + 'px';
-    });
-    g.addEventListener('mouseleave', function() {
-      tip.style.display  = 'none';
-      ring.style.display = 'none';
-      hoverG.style.display = 'none';
-    });
+    var m = L.circleMarker([d.lat, d.lng], {
+      radius: 4,
+      fillColor: '#E5A100',
+      fillOpacity: 0.2,
+      stroke: false,
+      className: 'zip-marker'
+    }).addTo(map);
+    /* The count label lives ON the marker; the popup carries the details.
+       autoPan stays OFF: a hover popup that pans the map slides the marker
+       out from under the cursor, which instantly mouseouts it shut. */
+    m.bindTooltip('', { permanent: true, direction: 'center', className: 'count-tip' });
+    m.bindPopup('', { closeButton: false, offset: L.point(0, -6), autoPan: false });
+    m.on('mouseover', function() { m.openPopup(); });   // hover on desktop...
+    m.on('mouseout',  function() { m.closePopup(); });  // ...tap still works on touch
+    dotEls[d.zip] = { marker: m, data: d };
   });
-
-  /* Add hover label on top of all dots */
-  svg.appendChild(hoverG);
 }
 
-/* ── Update dot sizes/opacity on filter change ───────────────────────────── */
+/* ── Update marker sizes/labels/popups on filter change ──────────────────── */
 function updateMapDots(counts) {
   var maxCount = 1;
   METRO_DATA.forEach(function(d) { if (counts[d.zip] > maxCount) maxCount = counts[d.zip]; });
@@ -719,23 +549,29 @@ function updateMapDots(counts) {
     var els = dotEls[d.zip]; if (!els) return;
     var cnt   = counts[d.zip] || 0;
     var ratio = cnt / maxCount;
-    /* Shrink dot to current-filter size but never exceed the collision-resolved maxR */
-    var r   = cnt > 0 ? Math.min(els.fp.maxR, 5 + Math.sqrt(cnt) * 1.9) : 3;
-    var op  = cnt > 0 ? 0.45 + ratio * 0.55 : 0.10;
-    var hot = (cnt === maxCount && cnt > 0);
-
-    els.dot.setAttribute('r',           r);
-    els.dot.setAttribute('opacity',     op);
-    els.dot.setAttribute('fill',        cnt > 0 ? '#E5A100' : '#243456');
-    els.dot.setAttribute('data-count',  cnt);
-    els.cntLbl.textContent = cnt > 0 ? String(cnt) : '';
-    els.cntLbl.setAttribute('y', String(els.fp.y + 1));
-
-    var rVals = hot ? (r+8)+';'+(r+16)+';'+(r+8) : '0;0;0';
-    var oVals = hot ? '0.7;0.1;0.7' : '0;0;0';
-    els.animR.setAttribute('values', rVals);
-    els.animO.setAttribute('values', oVals);
+    els.marker.setRadius(cnt > 0 ? 7 + Math.sqrt(cnt) * 2.6 : 3);
+    els.marker.setStyle({
+      fillColor:   cnt > 0 ? '#E5A100' : '#243456',
+      fillOpacity: cnt > 0 ? 0.55 + ratio * 0.4 : 0.25
+    });
+    els.marker.setTooltipContent(cnt > 0 ? String(cnt) : '');
+    els.marker.setPopupContent(_popupHtml(d, cnt));
   });
+}
+
+/* Popup body: ZIP, neighborhood, count under the current filter, and the full
+   per-category breakdown for that ZIP. */
+function _popupHtml(d, cnt) {
+  var cd = CAT_DATA[d.zip] || { shelters:0, food:0, cooling:0, pets:0 };
+  var lbl = currentFilter === 'all' ? 'all categories' :
+    CATS.find(function(c) { return c.key === currentFilter; }).label;
+  var rows = CATS.map(function(c) {
+    return '<div class="pp-row"><span>' + c.icon + ' ' + c.label + '</span><b>' + (cd[c.key] || 0) + '</b></div>';
+  }).join('');
+  return '<div class="pp-zip">' + d.zip + '</div>' +
+         '<div class="pp-nbhd">' + d.nbhd + '</div>' +
+         '<div class="pp-count">' + cnt + ' resource' + (cnt !== 1 ? 's' : '') + '</div>' +
+         '<div class="pp-sub">' + lbl + '</div>' + rows;
 }
 
 /* ── ZIP progress bar list — top 10 by default, expandable ──────────────── */
