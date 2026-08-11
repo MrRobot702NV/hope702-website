@@ -83,8 +83,17 @@
     .filter-btn:hover  { border-color:rgba(255,255,255,0.2); color:var(--text); }
     .filter-btn.active { background:var(--gold); border-color:var(--gold); color:var(--bg-dark); }
 
+    /* ── MODE TOGGLE ─────────────────────────────────────────────────── */
+    /* Same pill language as .filter-btn, but grouped in a segmented control so
+       it reads as "which dataset" rather than another category filter. */
+    .mode-toggle { display:inline-flex; background:var(--bg-light); border:1px solid var(--border); border-radius:999px; padding:3px; gap:3px; margin-bottom:14px; }
+    .mode-btn { background:none; border:none; border-radius:999px; color:var(--muted); cursor:pointer; font-size:0.8rem; font-weight:700; padding:7px 18px; transition:all 0.15s; white-space:nowrap; }
+    .mode-btn:hover  { color:var(--text); }
+    .mode-btn.active { background:var(--gold); color:var(--bg-dark); }
+    .mode-note { color:var(--muted); font-size:0.75rem; margin:0 0 14px 4px; }
+
     /* ── STATS ───────────────────────────────────────────────────────── */
-    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:16px; margin-bottom:24px; }
     .stat  { background:var(--bg-light); border:1px solid var(--border); border-radius:14px; padding:20px 22px; position:relative; overflow:hidden; }
     .stat::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--accent,var(--gold)); border-radius:14px 14px 0 0; }
     .stat-lbl  { font-size:0.67rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:10px; }
@@ -201,6 +210,12 @@
 
   <main class="body">
 
+    <div class="mode-toggle" role="group" aria-label="Map data source">
+      <button type="button" class="mode-btn active" onclick="setMode('coverage',this)">Resource Coverage</button>
+      <button type="button" class="mode-btn" onclick="setMode('demand',this)">SMS Demand</button>
+    </div>
+    <div class="mode-note" id="mode-note"></div>
+
     <div class="filters">
       <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
       <button class="filter-btn" onclick="setFilter('shelters',this)">Shelters</button>
@@ -211,7 +226,7 @@
 
     <div class="stats">
       <div class="stat" style="--accent:var(--gold)">
-        <div class="stat-lbl">Total Resources</div>
+        <div class="stat-lbl" id="s-total-lbl">Total Resources</div>
         <div class="stat-val" id="s-total">—</div>
         <div class="stat-note" id="s-total-note"></div>
       </div>
@@ -221,21 +236,26 @@
         <div class="stat-note">Clark County ZIP codes</div>
       </div>
       <div class="stat" style="--accent:var(--gold-lt)">
-        <div class="stat-lbl">Top Resource</div>
+        <div class="stat-lbl" id="s-top-lbl">Top Resource</div>
         <div class="stat-val" id="s-top-res" style="font-size:1.35rem">—</div>
         <div class="stat-note" id="s-top-res-note"></div>
       </div>
       <div class="stat" style="--accent:#F97316">
-        <div class="stat-lbl">Highest Coverage</div>
+        <div class="stat-lbl" id="s-hot-lbl">Highest Coverage</div>
         <div class="stat-val" id="s-hot-zip">—</div>
         <div class="stat-note" id="s-hot-note"></div>
+      </div>
+      <div class="stat" style="--accent:#22C55E">
+        <div class="stat-lbl">Texts This Week</div>
+        <div class="stat-val" id="s-texts">—</div>
+        <div class="stat-note" id="s-texts-note">anonymous SMS demand</div>
       </div>
     </div>
 
     <div class="main-grid">
       <div class="panel">
         <div class="panel-title">
-          Metro Heatmap &mdash; Las Vegas / Henderson &nbsp;
+          <span id="map-title-text">Metro Heatmap &mdash; Las Vegas / Henderson</span> &nbsp;
           <span id="map-hint" style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">hover a dot for details</span>
         </div>
         <div id="lv-map"></div>
@@ -252,13 +272,13 @@
       </div>
 
       <div class="panel">
-        <div class="panel-title">Top ZIP Codes by Resources</div>
+        <div class="panel-title" id="zip-panel-title">Top ZIP Codes by Resources</div>
         <div class="zip-list" id="zip-list"></div>
       </div>
     </div>
 
     <div class="cat-panel">
-      <div class="panel-title">Resources by Category</div>
+      <div class="panel-title" id="cat-panel-title">Resources by Category</div>
       <div class="cat-list" id="cat-list"></div>
     </div>
 
@@ -415,6 +435,77 @@ var currentFilter = 'all';
 var dotEls = {};
 var mapBuilt = false;
 
+/* ── SMS demand ──────────────────────────────────────────────────────────────
+   Anonymous aggregates from /api/activity (proxied to the SMS service, which
+   owns the volume the log is written to). Counts only — no rows, no numbers.
+   SMS categories map onto the four chart keys; WATER already folds into FOOD
+   in the SMS keyword map, so there are exactly four.                        */
+var viewMode      = 'coverage';        // 'coverage' | 'demand'
+var DEMAND        = null;              // raw payload
+var DEMAND_ZIP    = {};                // zip -> total texts
+var DEMAND_ZIPCAT = {};                // zip -> { shelters, food, cooling, pets }
+var DEMAND_CAT    = {};                // chart key -> texts
+var SMS_CAT_MAP   = { SHELTER:'shelters', FOOD:'food', COOL:'cooling', PET:'pets' };
+
+function ingestActivity(d) {
+  DEMAND = d || null;
+  DEMAND_ZIP = {}; DEMAND_ZIPCAT = {}; DEMAND_CAT = {};
+  CATS.forEach(function(c) { DEMAND_CAT[c.key] = 0; });
+  if (!d) return;
+  (d.by_zip || []).forEach(function(r) { DEMAND_ZIP[r.zip] = r.texts; });
+  (d.by_category || []).forEach(function(r) {
+    var k = SMS_CAT_MAP[r.category];
+    if (k) DEMAND_CAT[k] = (DEMAND_CAT[k] || 0) + r.texts;
+  });
+  (d.by_zip_category || []).forEach(function(r) {
+    var k = SMS_CAT_MAP[r.category]; if (!k) return;
+    if (!DEMAND_ZIPCAT[r.zip]) DEMAND_ZIPCAT[r.zip] = { shelters:0, food:0, cooling:0, pets:0 };
+    DEMAND_ZIPCAT[r.zip][k] += r.texts;
+  });
+}
+
+function loadActivity() {
+  return fetch('/api/activity', { cache:'no-store' })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { ingestActivity(d); })
+    .catch(function(e) { console.error('activity fetch failed:', e); ingestActivity(null); });
+}
+
+function setMode(mode, btn) {
+  viewMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  applyModeChrome();
+  refresh();
+}
+
+/* Labels that change with the mode. Everything else — branding, popups shape,
+   rural/mobile strips, Metro view reset — is untouched by the toggle. */
+function applyModeChrome() {
+  var demand = viewMode === 'demand';
+  var note = document.getElementById('mode-note');
+  if (demand) {
+    var stale = DEMAND && DEMAND.unavailable;
+    note.textContent = stale
+      ? 'SMS demand unavailable (' + DEMAND.unavailable + ') — showing zero.'
+      : 'Marker size = anonymous text volume per ZIP. No phone numbers are stored or shown.';
+  } else {
+    note.textContent = 'Marker size = resources in the HOPE 702 database per ZIP.';
+  }
+  document.getElementById('map-title-text').textContent = demand
+    ? 'SMS Demand — texts per ZIP'
+    : 'Metro Heatmap — Las Vegas / Henderson';
+  document.getElementById('zip-panel-title').textContent = demand
+    ? 'Top ZIP Codes by Texts'
+    : 'Top ZIP Codes by Resources';
+  document.getElementById('cat-panel-title').textContent = demand
+    ? 'Demand by Category — texts'
+    : 'Resources by Category';
+  document.getElementById('s-hot-lbl').textContent   = demand ? 'Highest Demand' : 'Highest Coverage';
+  document.getElementById('s-total-lbl').textContent = demand ? 'Total Texts'    : 'Total Resources';
+  document.getElementById('s-top-lbl').textContent   = demand ? 'Top Need'       : 'Top Resource';
+}
+
 /* ── Auth ────────────────────────────────────────────────────────────────── */
 document.getElementById('pw-input').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') tryLogin();
@@ -448,6 +539,11 @@ function setFilter(key, btn) {
   refresh();
 }
 function countFor(zip) {
+  if (viewMode === 'demand') {
+    if (currentFilter === 'all') return DEMAND_ZIP[zip] || 0;
+    var dc = DEMAND_ZIPCAT[zip];
+    return dc ? (dc[currentFilter] || 0) : 0;
+  }
   var d = CAT_DATA[zip]; if (!d) return 0;
   if (currentFilter === 'all') return d.shelters + d.food + d.cooling + d.pets;
   return d[currentFilter] || 0;
@@ -459,7 +555,12 @@ function initDashboard() {
   buildRuralStrip();
   buildMobileStrip();
   buildMap();
-  refresh();
+  applyModeChrome();
+  refresh();                       // paint coverage immediately...
+  loadActivity().then(function() { // ...then fill in demand when it lands
+    applyModeChrome();
+    refresh();
+  });
 }
 function refresh() {
   var counts = {}, total = 0;
@@ -496,27 +597,50 @@ function buildMobileStrip() {
 
 /* ── Stats ───────────────────────────────────────────────────────────────── */
 function updateStats(counts, total) {
+  var demand = viewMode === 'demand';
+  var noun   = demand ? 'texts' : 'resources';
+
   document.getElementById('s-total').textContent = total;
   if (currentFilter === 'all') {
-    document.getElementById('s-total-note').textContent = 'resources across Clark County';
+    document.getElementById('s-total-note').textContent = demand
+      ? 'texts logged across Clark County' : 'resources across Clark County';
   } else {
     var cat = CATS.find(function(c) { return c.key === currentFilter; });
-    document.getElementById('s-total-note').textContent = cat.label + ' locations in database';
+    document.getElementById('s-total-note').textContent = demand
+      ? cat.label + ' texts logged' : cat.label + ' locations in database';
   }
   var active = ZIP_DATA.filter(function(d) { return counts[d.zip] > 0; }).length;
   document.getElementById('s-zips').textContent = active;
 
-  var catTotals = {};
-  CATS.forEach(function(c) {
-    catTotals[c.key] = ZIP_DATA.reduce(function(s,d) { return s + (CAT_DATA[d.zip] ? CAT_DATA[d.zip][c.key]||0 : 0); }, 0);
-  });
+  var catTotals = catTotalsFor(demand);
   var topCat = CATS.reduce(function(best,c) { return catTotals[c.key] > catTotals[best.key] ? c : best; });
   document.getElementById('s-top-res').textContent     = topCat.icon + ' ' + topCat.label;
-  document.getElementById('s-top-res-note').textContent = catTotals[topCat.key] + ' locations';
+  document.getElementById('s-top-res-note').textContent =
+    catTotals[topCat.key] + (demand ? ' texts' : ' locations');
 
   var hot = ZIP_DATA.slice().sort(function(a,b) { return counts[b.zip]-counts[a.zip]; })[0];
   document.getElementById('s-hot-zip').textContent  = hot.zip;
-  document.getElementById('s-hot-note').textContent = hot.nbhd + ' · ' + counts[hot.zip] + ' resources';
+  document.getElementById('s-hot-note').textContent = hot.nbhd + ' · ' + counts[hot.zip] + ' ' + noun;
+
+  /* Texts-this-week card is demand data in both modes — it is the standing
+     signal, not a view of whatever the toggle happens to be showing. */
+  var wk = DEMAND && DEMAND.totals ? DEMAND.totals.this_week : 0;
+  document.getElementById('s-texts').textContent = wk;
+  document.getElementById('s-texts-note').textContent =
+    (DEMAND && DEMAND.unavailable) ? 'demand feed unavailable'
+      : (DEMAND && DEMAND.totals ? DEMAND.totals.people_this_week + ' distinct texters · anonymous'
+                                 : 'anonymous SMS demand');
+}
+
+/* Per-category totals for whichever dataset is in view. */
+function catTotalsFor(demand) {
+  var t = {};
+  CATS.forEach(function(c) {
+    t[c.key] = demand
+      ? (DEMAND_CAT[c.key] || 0)
+      : ZIP_DATA.reduce(function(s,d) { return s + (CAT_DATA[d.zip] ? CAT_DATA[d.zip][c.key]||0 : 0); }, 0);
+  });
+  return t;
 }
 
 /* ── Leaflet map — real tiles + interactive gold markers ─────────────────── */
@@ -607,16 +731,21 @@ function updateMapDots(counts) {
 /* Popup body: ZIP, neighborhood, count under the current filter, and the full
    per-category breakdown for that ZIP. */
 function _popupHtml(d, cnt) {
-  var cd = CAT_DATA[d.zip] || { shelters:0, food:0, cooling:0, pets:0 };
+  var demand = viewMode === 'demand';
+  var cd = demand
+    ? (DEMAND_ZIPCAT[d.zip] || { shelters:0, food:0, cooling:0, pets:0 })
+    : (CAT_DATA[d.zip]      || { shelters:0, food:0, cooling:0, pets:0 });
   var lbl = currentFilter === 'all' ? 'all categories' :
     CATS.find(function(c) { return c.key === currentFilter; }).label;
   var rows = CATS.map(function(c) {
     return '<div class="pp-row"><span>' + c.icon + ' ' + c.label + '</span><b>' + (cd[c.key] || 0) + '</b></div>';
   }).join('');
+  var unit = demand ? ('text' + (cnt !== 1 ? 's' : ''))
+                    : ('resource' + (cnt !== 1 ? 's' : ''));
   return '<div class="pp-zip">' + d.zip + '</div>' +
          '<div class="pp-nbhd">' + d.nbhd + '</div>' +
-         '<div class="pp-count">' + cnt + ' resource' + (cnt !== 1 ? 's' : '') + '</div>' +
-         '<div class="pp-sub">' + lbl + '</div>' + rows;
+         '<div class="pp-count">' + cnt + ' ' + unit + '</div>' +
+         '<div class="pp-sub">' + lbl + (demand ? ' · anonymous' : '') + '</div>' + rows;
 }
 
 /* ── ZIP progress bar list — top 10 by default, expandable ──────────────── */
@@ -669,10 +798,7 @@ function buildZipList(counts) {
 function buildCatChart() {
   var container = document.getElementById('cat-list');
   container.innerHTML = '';
-  var catTotals = {};
-  CATS.forEach(function(c) {
-    catTotals[c.key] = ZIP_DATA.reduce(function(s,d) { return s + (CAT_DATA[d.zip]?CAT_DATA[d.zip][c.key]||0:0); }, 0);
-  });
+  var catTotals = catTotalsFor(viewMode === 'demand');
   var grandTotal = CATS.reduce(function(s,c){return s+catTotals[c.key];},0) || 1;
   var maxVal = CATS.reduce(function(m,c){return catTotals[c.key]>m?catTotals[c.key]:m;},1);
 
