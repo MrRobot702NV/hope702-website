@@ -30,7 +30,9 @@
     ::-webkit-scrollbar-thumb { background:var(--bg-light); border-radius:3px; }
 
     /* ── LOGIN ──────────────────────────────────────────────────────── */
-    #login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; background:radial-gradient(ellipse at 50% 40%, #1E3160 0%, var(--bg-dark) 70%); }
+    /* Leaves room for the site footer below, so the login view still fills the
+       viewport exactly instead of introducing a ~60px scroll. */
+    #login-screen { display:flex; align-items:center; justify-content:center; min-height:calc(100vh - 60px); background:radial-gradient(ellipse at 50% 40%, #1E3160 0%, var(--bg-dark) 70%); }
     .login-card { background:var(--bg-light); border:1px solid var(--border); border-radius:20px; padding:52px 44px 44px; width:380px; text-align:center; box-shadow:0 32px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(229,161,0,0.08); }
     .logo-lockup { display:inline-flex; align-items:center; gap:10px; margin-bottom:10px; }
     .logo-hope   { font-size:2.4rem; font-weight:800; color:#fff; letter-spacing:0.06em; }
@@ -49,6 +51,11 @@
       0%,100% { transform:translateX(0); } 18% { transform:translateX(-7px); }
       54%      { transform:translateX(7px);  } 72% { transform:translateX(-4px); }
     }
+
+    /* ── SITE FOOTER ─────────────────────────────────────────────────── */
+    .site-footer { background:var(--bg-dark); border-top:1px solid var(--border); padding:17px 32px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; font-size:0.78rem; color:var(--muted); }
+    .footer-support { display:inline-block; padding:7px 16px; border:1px solid var(--gold); border-radius:6px; color:var(--gold); font-size:0.8rem; font-weight:700; text-decoration:none; transition:background 0.2s,color 0.2s; }
+    .footer-support:hover { background:var(--gold); color:var(--bg-dark); }
 
     /* ── DASHBOARD ───────────────────────────────────────────────────── */
     #dashboard { display:none; }
@@ -695,6 +702,18 @@ function buildCatChart() {
   });
 }
 </script>
+
+<!-- ═══ SITE FOOTER ══════════════════════════════════════════════════════════
+     Deliberately outside #login-screen AND #dashboard. #dashboard is
+     display:none until sign-in, so a link placed inside it would be hidden
+     from crawlers and from anyone who is not signed-in staff. Out here it is
+     in the static HTML on every render of this page. -->
+<footer class="site-footer">
+  <div>© 2026 HOPE 702 · hope702.org</div>
+  <a class="footer-support"
+     href="https://www.gofundme.com/f/hope-702-free-sms-lifeline-for-las-vegas-homeless"
+     target="_blank" rel="noopener">Support HOPE 702</a>
+</footer>
 
 </body>
 </html>
