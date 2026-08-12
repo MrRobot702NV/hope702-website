@@ -6,3 +6,10 @@
   from = "/api/create-payment-intent"
   to   = "/.netlify/functions/create-payment-intent"
   status = 200
+
+# Anonymous SMS demand aggregates. Keeps the dashboard's fetch same-origin, so
+# it needs no CORS and no knowledge of where the SMS service lives.
+[[redirects]]
+  from = "/api/activity"
+  to   = "/.netlify/functions/activity"
+  status = 200
