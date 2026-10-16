@@ -47,6 +47,11 @@ app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
+/* /winter → winter.html */
+app.get('/winter', (req, res) => {
+  res.sendFile(path.join(__dirname, 'winter.html'));
+});
+
 /* Fallback: root → index.html */
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
