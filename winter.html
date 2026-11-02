@@ -25,6 +25,8 @@
   --wind:#c3a2ff;
   --other:#a9b6c9;
   --bad:#ff8a7a;
+  --warm:#ff9d61;
+  --warm-ink:#2b1306;
   --display:"Fraunces",Georgia,"Times New Roman",serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
@@ -100,6 +102,65 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
 .tag.rain{background:rgba(76,199,159,.15);color:var(--flood)}
 .tag.mix{background:rgba(195,162,255,.16);color:var(--wind)}
 
+/* Warm places */
+.warm-card{border-color:rgba(255,157,97,.35)}
+.warm-call{margin:0 0 12px;font-size:13.5px;color:var(--muted);line-height:1.55}
+.warm-call strong{color:var(--text);font-weight:600}
+.warm-call a{color:var(--warm);font-family:var(--mono);font-weight:500;text-decoration:none;white-space:nowrap}
+.warm-call a:hover{text-decoration:underline}
+.near-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font:600 14px var(--body);padding:10px 12px;border-radius:8px;border:none;background:var(--warm);color:var(--warm-ink);cursor:pointer}
+.near-btn svg{width:16px;height:16px;fill:currentColor;flex:none}
+.near-btn[disabled]{opacity:.7;cursor:progress}
+.near-note{margin:8px 0 4px;font-size:12px;color:var(--muted)}
+.near-note strong{color:var(--text);font-weight:600}
+.warm-list{list-style:none;margin:0;padding:0;display:grid}
+.warm-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;width:100%;text-align:left;background:none;border:none;border-top:1px solid var(--line);padding:10px 0;color:var(--text);font:inherit;cursor:pointer}
+.warm-list li:first-child .warm-item{border-top:none}
+.warm-item:hover .wi-name{color:var(--warm)}
+.wi-name{font-weight:600;line-height:1.3}
+.wi-dist{font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.wi-meta{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.wi-hours{grid-column:1/-1;font-size:12.5px;color:var(--muted)}
+.kind{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border-radius:4px;font-weight:500}
+.kind-open{background:rgba(255,157,97,.16);color:var(--warm)}
+.kind-codeblue{background:rgba(134,204,255,.15);color:var(--ice)}
+.kind-day{background:rgba(229,161,0,.14);color:var(--gold)}
+.more-btn{width:100%;margin-top:4px;font:500 13px var(--body);padding:7px;border-radius:6px;border:1px solid var(--line);background:none;color:var(--text);cursor:pointer}
+.more-btn:hover{background:var(--panel-2)}
+.codeblue{margin-top:14px;padding:10px 12px;border:1px dashed rgba(134,204,255,.4);border-radius:8px;font-size:13px;color:var(--muted)}
+.codeblue p{margin:4px 0 0}
+.cb-head{font-weight:600;color:var(--ice)}
+.cb-links a{color:var(--ice)}
+.cb-status{margin:0 0 12px;padding:9px 11px;border-radius:8px;font-size:13px;line-height:1.45}
+.cb-status strong{font-weight:600}
+.cb-status.on{background:rgba(134,204,255,.13);border:1px solid rgba(134,204,255,.45);color:var(--text)}
+.cb-status.on strong{color:var(--ice)}
+.cb-status.off{background:var(--panel-2);color:var(--muted)}
+.lg-pin{display:inline-block;width:12px;height:12px;border-radius:50%}
+.lg-pin.kind-open{background:var(--warm)}
+.lg-pin.kind-codeblue{background:var(--night);border:2px dashed var(--warm)}
+.lg-pin.kind-day{background:var(--night);border:2px solid var(--gold)}
+.legend-warm{margin-top:8px}
+
+/* Warm place pins */
+.warm-pin{display:grid;place-items:center;border-radius:50%;box-shadow:0 0 0 3px rgba(10,20,36,.65)}
+.warm-pin svg{width:13px;height:13px}
+.warm-pin.kind-open{background:var(--warm);color:var(--warm-ink)}
+.warm-pin.kind-codeblue{background:var(--night);color:var(--warm);border:2px dashed var(--warm)}
+.warm-pin.kind-day{background:var(--night);color:var(--gold);border:2px solid var(--gold)}
+.you-pin{width:16px;height:16px;border-radius:50%;background:#7fb7ff;border:3px solid #fff;box-shadow:0 0 0 6px rgba(127,183,255,.25)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel);color:var(--text);border:1px solid var(--line);box-shadow:none}
+.leaflet-popup-content{margin:12px 14px;font:13px/1.5 var(--body);min-width:220px}
+.leaflet-container a.leaflet-popup-close-button{color:var(--muted)}
+.wp-name{font-family:var(--display);font-size:17px;font-weight:600;line-height:1.2;margin:0 0 4px}
+.wp-row{margin:6px 0 0;color:var(--muted)}
+.wp-row b{color:var(--text);font-weight:500}
+.wp-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.wp-actions a{font:600 12.5px var(--body);text-decoration:none;padding:6px 10px;border-radius:6px;border:1px solid var(--line);color:var(--text)}
+.wp-actions a.primary{background:var(--warm);border-color:var(--warm);color:var(--warm-ink)}
+.wp-src{margin-top:8px;font-size:11.5px;color:var(--muted)}
+.wp-src a{color:var(--muted)}
+
 .alerts{display:grid;gap:12px;max-height:440px;overflow:auto;padding-right:2px}
 .alert{border-left:3px solid var(--other);padding:4px 0 4px 11px;cursor:pointer;border-radius:0;min-width:0}
 .alert[data-cat="winter"]{border-color:var(--ice)}
@@ -143,7 +204,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
 <body>
 <header class="top">
   <a class="mark" href="/" aria-label="HOPE home">HOPE <span class="badge">Winter Watch</span></a>
-  <p class="sub"><strong>Wasatch Front</strong> · snow, rain and winter alerts from Ogden to Payson</p>
+  <p class="sub"><strong>Wasatch Front</strong> · warm places, snow, rain and winter alerts from Ogden to Payson</p>
   <div class="status" aria-live="polite">
     <span class="pill" id="st-radar"><span class="dot"></span><span>Radar loading</span></span>
     <span class="pill" id="st-alerts"><span class="dot"></span><span>Alerts loading</span></span>
@@ -165,9 +226,39 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
   </section>
 
   <aside class="rail">
+    <section class="card warm-card" aria-labelledby="h-warm">
+      <h2 id="h-warm">Warm places <span class="count" id="warm-count">10</span></h2>
+      <p class="warm-call">Beds change nightly, so call before you go.<br><strong>Salt Lake County: <a href="tel:+18019909999">801-990-9999</a></strong> · Anywhere in Utah: dial <a href="tel:211">2-1-1</a></p>
+      <button class="near-btn" type="button" id="near-btn">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.6"/><path d="M8 .8v2.4M8 12.8v2.4M.8 8h2.4M12.8 8h2.4" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="8" cy="8" r="5.4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>
+        <span id="near-label">Find the closest to me</span>
+      </button>
+      <p class="near-note" id="near-note">Sorted by distance from <strong id="warm-origin">Salt Lake City</strong>. Your location never leaves your phone.</p>
+      <ol class="warm-list" id="warm-list"></ol>
+      <button class="more-btn" type="button" id="warm-more" aria-expanded="false">Show all</button>
+      <div class="codeblue">
+        <div class="cb-head">Code Blue nights</div>
+        <p>When the forecast hits 18°F or colder, wind chill included, for two or more hours, extra overflow space opens across the Wasatch Front.</p>
+        <p class="cb-links"><a href="https://www.weather.gov/slc/CodeBlueUtah" target="_blank" rel="noopener">Today's Code Blue forecast</a> · <a href="https://endutahhomelessness.org/daily-bed-availability/" target="_blank" rel="noopener">Live shelter beds</a></p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="h-fc">
+      <h2 id="h-fc">Forecast <span class="count" id="fc-place">Salt Lake City</span></h2>
+      <div class="chips" id="chips" role="group" aria-label="Choose a town"></div>
+      <div class="cb-status" id="cb-status" aria-live="polite" hidden></div>
+      <div class="periods" id="periods" aria-live="polite"><p class="empty">Loading forecast...</p></div>
+    </section>
+
+    <section class="card" aria-labelledby="h-alerts">
+      <h2 id="h-alerts">Active alerts <span class="count" id="alert-count">0</span></h2>
+      <div class="alerts" id="alert-list"><p class="empty">Loading alerts...</p></div>
+    </section>
+
     <section class="card" aria-labelledby="h-layers">
       <h2 id="h-layers">Map layers</h2>
       <div class="toggles">
+        <button class="tog" type="button" id="t-warm" aria-pressed="true"><span>Warm places<small>Shelters, warming centers and day centers</small></span><span class="sw"></span></button>
         <button class="tog" type="button" id="t-radar" aria-pressed="true"><span>Radar<small>Last two hours, every 10 minutes</small></span><span class="sw"></span></button>
         <button class="tog" type="button" id="t-snow" aria-pressed="true"><span>Show snow separately<small>Snow draws in its own color when the radar reports it</small></span><span class="sw"></span></button>
         <button class="tog" type="button" id="t-alerts" aria-pressed="true"><span>Alert areas<small>Shaded zones from National Weather Service alerts</small></span><span class="sw"></span></button>
@@ -179,17 +270,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
         <span><i style="background:var(--wind)"></i>Wind</span>
         <span><i style="background:var(--other)"></i>Other</span>
       </div>
-    </section>
-
-    <section class="card" aria-labelledby="h-fc">
-      <h2 id="h-fc">Forecast <span class="count" id="fc-place">Salt Lake City</span></h2>
-      <div class="chips" id="chips" role="group" aria-label="Choose a town"></div>
-      <div class="periods" id="periods" aria-live="polite"><p class="empty">Loading forecast...</p></div>
-    </section>
-
-    <section class="card" aria-labelledby="h-alerts">
-      <h2 id="h-alerts">Active alerts <span class="count" id="alert-count">0</span></h2>
-      <div class="alerts" id="alert-list"><p class="empty">Loading alerts...</p></div>
+      <div class="legend legend-warm" aria-label="Warm place markers">
+        <span><b class="lg-pin kind-open"></b>Open nightly or year-round</span>
+        <span><b class="lg-pin kind-codeblue"></b>Code Blue nights only</span>
+        <span><b class="lg-pin kind-day"></b>Daytime and meals</span>
+      </div>
     </section>
   </aside>
 </main>
@@ -200,6 +285,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
     <a href="https://www.weather.gov/slc/" target="_blank" rel="noopener">NWS Salt Lake City</a>
     <a href="https://utahavalanchecenter.org/" target="_blank" rel="noopener">Utah Avalanche Center</a>
     <a href="https://udottraffic.utah.gov/" target="_blank" rel="noopener">UDOT road conditions</a>
+    <a href="https://endutahhomelessness.org/daily-bed-availability/" target="_blank" rel="noopener">Live shelter beds</a>
   </nav>
 </footer>
 
@@ -220,13 +306,64 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
   // Alert areas counted as "near the Wasatch Front"
   var NEAR = /Salt Lake|Wasatch|Utah Valley|Utah, UT|Tooele|Davis|Weber|Morgan|Summit|Ogden|Cache|Park City|Provo|Uinta/i;
   var COLORS = { winter:"#86ccff", flood:"#4cc79f", wind:"#c3a2ff", other:"#a9b6c9" };
+
+  // Warm places, verified Nov 1 2026 against the source on each entry.
+  // Coordinates are OpenStreetMap building or address-point matches, not estimates.
+  var VERIFIED = "Nov 1, 2026";
+  var SRC = {
+    cas:   ["Community Action Services", "https://communityactionprovo.org/get-help/housing/warming-center.html"],
+    slc:   ["Salt Lake City", "https://www.slc.gov/homelessness/housing-and-shelter/"],
+    sslc:  ["South Salt Lake", "https://sslc.gov/250/Shelters"],
+    road:  ["The Road Home", "https://theroadhome.org/resourcecenter/connie-crosby-family-resource-center/"],
+    davis: ["Davis County", "https://www.daviscountyutah.gov/ced/grants-and-community-development/code-blue"],
+    ksl:   ["KSL, Dec 2025", "https://www.ksl.com/article/51423130/weber-county-shelter-to-serve-as-homeless-warming-center-search-continues-for-permanent-site"]
+  };
+  var KIND_LABEL = { open:"Nightly this winter", allyear:"Year-round", codeblue:"Code Blue only", day:"Daytime & meals" };
+  function pinClass(kind){ return kind === "codeblue" ? "kind-codeblue" : kind === "day" ? "kind-day" : "kind-open"; }
+  var WARM = [
+    { id:"ucwc", name:"Utah County Warming Center", kind:"open", city:"Provo", lat:40.1996648, lon:-111.6193006,
+      addr:"2615 S State St, Provo, UT 84606", hours:"Nightly 8 PM to 8 AM, Nov 1 through Mar 15",
+      who:"Single adults 18+ and couples. Families: call (801) 852-6210 about a motel voucher.",
+      extra:"Free one-day bus pass in the morning.", phone:"801-373-8200", phoneLabel:"Community Action", src:"cas" },
+    { id:"fcc", name:"Food & Care Coalition", kind:"day", city:"Provo", lat:40.2228856, lon:-111.6533105,
+      addr:"299 E 900 S, Provo, UT 84606", hours:"Call for hours",
+      who:"Meals and day services. Breakfast Monday to Saturday for warming center guests.",
+      phone:"801-373-1825", src:"cas" },
+    { id:"gek", name:"Geraldine E. King Women's Resource Center", kind:"allyear", city:"Salt Lake City", lat:40.7546263, lon:-111.8869092,
+      addr:"131 E 700 S, Salt Lake City, UT 84111", hours:"Open 24/7",
+      who:"Women. About 200 beds.", phone:"801-990-9999", phoneLabel:"County shelter line", src:"slc" },
+    { id:"gmrc", name:"Gail Miller Resource Center", kind:"allyear", city:"Salt Lake City", lat:40.7370329, lon:-111.897853,
+      addr:"242 W Paramount Ave, Salt Lake City, UT 84115", hours:"Open 24/7",
+      who:"Men and women. About 200 beds.", phone:"801-990-9999", phoneLabel:"County shelter line", src:"slc" },
+    { id:"parc", name:"Pamela Atkinson Resource Center", kind:"allyear", city:"South Salt Lake", lat:40.6975931, lon:-111.9205934,
+      addr:"3380 S 1000 W, South Salt Lake, UT 84119", hours:"Open 24/7",
+      who:"Men.", phone:"801-990-9999", phoneLabel:"County shelter line", src:"sslc" },
+    { id:"weigand", name:"Weigand Center & St. Vincent de Paul", kind:"day", city:"Salt Lake City", lat:40.7645657, lon:-111.9038585,
+      addr:"437 W 200 S, Salt Lake City, UT 84101", hours:"Daytime shelter and meals. Winter overflow beds 7 PM to 7 AM.",
+      who:"Men and women.", phone:"801-363-7710", src:"sslc" },
+    { id:"yrc", name:"Youth Resource Center (VOA)", kind:"day", city:"Salt Lake City", lat:40.7500905, lon:-111.9031162,
+      addr:"888 S 400 W, Salt Lake City, UT 84101", hours:"Drop-in center. Overnight youth beds 9 PM to 7 AM in the winter plan.",
+      who:"Ages 15 to 22.", phone:"801-364-0744", src:"sslc" },
+    { id:"crosby", name:"Connie Crosby Family Resource Center", kind:"allyear", city:"Midvale", lat:40.6203197, lon:-111.9062527,
+      addr:"529 W 9th Ave, Midvale, UT 84047", hours:"Open 24 hours, year-round",
+      who:"Families with children. Call the county shelter line first.", phone:"801-990-9999", phoneLabel:"County shelter line", src:"road" },
+    { id:"davis", name:"Davis County Code Blue Warming Center", kind:"codeblue", city:"Clearfield", lat:41.1107531, lon:-112.0254811,
+      addr:"22 E 200 S, Clearfield, UT 84015", place:"Talia's Event Center", hours:"Code Blue nights only, 7:30 PM to 7:30 AM",
+      who:"Anyone unsheltered. Cots and bedding provided. Pets may be allowed, one per household. Families with kids: Open Doors, 385-310-3807.",
+      extra:"UTA Route 470 stops at State St & 200 S, a few hundred feet away.", phone:"801-451-3495", phoneLabel:"Davis County Community Services", src:"davis" },
+    { id:"lantern", name:"Lantern House", kind:"allyear", city:"Ogden", lat:41.2026089, lon:-111.9833882,
+      addr:"269 W 33rd St, Ogden, UT 84401", hours:"Year-round shelter",
+      who:"Weber County's main shelter. Last winter its dining hall, just north, opened on Code Blue nights for up to 50 people.",
+      phone:"211", phoneLabel:"Utah 2-1-1", src:"ksl" }
+  ];
   var SEV = { Extreme:0, Severe:1, Moderate:2, Minor:3, Unknown:4 };
 
   var state = {
     radarOn:true, snow:true, alertsOn:true, nearby:true,
     host:"", frames:[], pastCount:0, idx:0, playing:false, timer:null,
     layers:new Map(), alerts:[], zoneCache:new Map(), shapes:new Map(),
-    place:"slc", fcCache:new Map()
+    place:"slc", fcCache:new Map(),
+    warmOn:true, origin:null, warmMarkers:new Map(), warmExpanded:false, youMarker:null
   };
   function $(s){ return document.querySelector(s); }
   function el(tag, cls, text){ var n=document.createElement(tag); if(cls) n.className=cls; if(text!=null) n.textContent=text; return n; }
@@ -265,6 +402,98 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
     var m = L.circleMarker([p.lat,p.lon], { radius:5, color:"#e5a100", weight:2, fillColor:"#0a1424", fillOpacity:1 }).addTo(map);
     m.bindTooltip(p.name, { permanent:true, direction:"right", offset:[7,0], className:"city-label" });
     m.on("click", function(){ selectPlace(p.id, false); });
+  });
+
+  // ---------- Warm places ----------
+  var ICONS = {
+    house:'<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.6 1.2 7.3l1 1.2.8-.7V14h3.8v-3.6h2.4V14H13V7.8l.8.7 1-1.2z"/></svg>',
+    meal:'<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 1h1.2v4.2h.9V1h1.2v4.2h.9V1h1.2v5.2c0 1-.7 1.8-1.7 2V15H6V8.2c-1-.2-1.7-1-1.7-2zM11.3 1c1.4.6 2.2 2.5 2.2 4.6 0 1.6-.6 2.6-1.4 3V15h-1.6V1z"/></svg>'
+  };
+  var warmLayer = L.layerGroup().addTo(map);
+  function dirUrl(addr){ return "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(addr); }
+  function telHref(num){ return "tel:" + (num === "211" ? "211" : "+1" + num.replace(/\D/g, "")); }
+  function popupFor(w){
+    var box = el("div");
+    box.appendChild(el("div", "kind " + pinClass(w.kind), KIND_LABEL[w.kind]));
+    box.appendChild(el("p", "wp-name", w.name));
+    var addr = el("p", "wp-row"); addr.appendChild(el("b", null, w.place ? w.place + ", " : "")); addr.appendChild(document.createTextNode(w.addr));
+    box.append(addr, el("p", "wp-row", w.hours), el("p", "wp-row", w.who));
+    if (w.extra) box.appendChild(el("p", "wp-row", w.extra));
+    var act = el("div", "wp-actions");
+    var call = el("a", "primary", "Call " + (w.phone === "211" ? "2-1-1" : w.phone)); call.href = telHref(w.phone);
+    var go = el("a", null, "Directions"); go.href = dirUrl(w.addr); go.target = "_blank"; go.rel = "noopener";
+    act.append(call, go); box.appendChild(act);
+    if (w.phoneLabel) box.appendChild(el("p", "wp-src", w.phoneLabel + ": " + (w.phone === "211" ? "dial 2-1-1" : w.phone)));
+    var src = el("p", "wp-src"); src.appendChild(document.createTextNode("Verified " + VERIFIED + " · "));
+    var sa = el("a", null, SRC[w.src][0]); sa.href = SRC[w.src][1]; sa.target = "_blank"; sa.rel = "noopener";
+    src.appendChild(sa); box.appendChild(src);
+    return box;
+  }
+  WARM.forEach(function(w){
+    var icon = L.divIcon({ className:"", iconSize:[26,26], iconAnchor:[13,13], popupAnchor:[0,-12],
+      html:'<div class="warm-pin ' + pinClass(w.kind) + '" style="width:26px;height:26px">' + (w.kind === "day" ? ICONS.meal : ICONS.house) + '</div>' });
+    var m = L.marker([w.lat, w.lon], { icon:icon, title:w.name, keyboard:true, riseOnHover:true });
+    m.bindPopup(function(){ return popupFor(w); }, { maxWidth:300 });
+    m.addTo(warmLayer);
+    state.warmMarkers.set(w.id, m);
+  });
+  function milesBetween(a, b){
+    var R = 3958.8, toR = Math.PI / 180;
+    var dLat = (b.lat - a.lat) * toR, dLon = (b.lon - a.lon) * toR;
+    var h = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(a.lat*toR) * Math.cos(b.lat*toR) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  function renderWarm(){
+    var o = state.origin;
+    var rows = WARM.map(function(w){ return { w:w, d:o ? milesBetween(o, w) : 0 }; })
+                   .sort(function(a, b){ return a.d - b.d; });
+    var show = state.warmExpanded ? rows : rows.slice(0, 5);
+    var list = $("#warm-list"); list.textContent = "";
+    show.forEach(function(r){
+      var w = r.w;
+      var li = el("li"); var b = el("button", "warm-item"); b.type = "button";
+      b.appendChild(el("span", "wi-name", w.name));
+      b.appendChild(el("span", "wi-dist", r.d < 0.1 ? "here" : (r.d < 10 ? r.d.toFixed(1) : Math.round(r.d)) + " mi"));
+      var meta = el("span", "wi-meta"); meta.appendChild(el("span", "kind " + pinClass(w.kind), KIND_LABEL[w.kind])); meta.appendChild(document.createTextNode(w.city));
+      b.append(meta, el("span", "wi-hours", w.hours));
+      b.addEventListener("click", function(){ focusWarm(w.id); });
+      li.appendChild(b); list.appendChild(li);
+    });
+    var more = $("#warm-more");
+    more.textContent = state.warmExpanded ? "Show fewer" : "Show all " + WARM.length;
+    more.setAttribute("aria-expanded", String(state.warmExpanded));
+    $("#warm-count").textContent = WARM.length;
+    $("#warm-origin").textContent = o ? o.label : "Salt Lake City";
+  }
+  function focusWarm(id){
+    var m = state.warmMarkers.get(id);
+    if (!m) return;
+    if (!state.warmOn) { state.warmOn = true; $("#t-warm").setAttribute("aria-pressed","true"); warmLayer.addTo(map); }
+    map.flyTo(m.getLatLng(), 14, { duration:.8 });
+    map.once("moveend", function(){ m.openPopup(); });
+    if (window.matchMedia("(max-width:900px)").matches) $(".mapwrap").scrollIntoView({ behavior:"smooth", block:"start" });
+  }
+  $("#warm-more").addEventListener("click", function(){ state.warmExpanded = !state.warmExpanded; renderWarm(); });
+  $("#near-btn").addEventListener("click", function(){
+    var btn = $("#near-btn"), label = $("#near-label"), note = $("#near-note");
+    if (!("geolocation" in navigator)) { note.textContent = "This browser can't share your location. Pick the closest town in the Forecast card instead."; return; }
+    btn.disabled = true; label.textContent = "Finding you...";
+    navigator.geolocation.getCurrentPosition(function(pos){
+      btn.disabled = false; label.textContent = "Find the closest to me";
+      var me = { lat:pos.coords.latitude, lon:pos.coords.longitude, label:"your location" };
+      state.origin = me; state.warmExpanded = false;
+      note.innerHTML = 'Sorted by distance from <strong id="warm-origin">your location</strong>. Your location never leaves your phone.';
+      if (state.youMarker) map.removeLayer(state.youMarker);
+      state.youMarker = L.marker([me.lat, me.lon], { icon:L.divIcon({ className:"", html:'<div class="you-pin"></div>', iconSize:[16,16], iconAnchor:[8,8] }), title:"You are here", zIndexOffset:1000 }).addTo(map);
+      renderWarm();
+      var nearest = WARM.slice().sort(function(a, b){ return milesBetween(me, a) - milesBetween(me, b); })[0];
+      map.flyToBounds(L.latLngBounds([[me.lat, me.lon], [nearest.lat, nearest.lon]]), { padding:[60,60], maxZoom:14, duration:.8 });
+    }, function(err){
+      btn.disabled = false; label.textContent = "Find the closest to me";
+      note.textContent = err.code === 1
+        ? "Location access was blocked. Pick the closest town in the Forecast card and the list will sort from there."
+        : "Couldn't get your location. Pick the closest town in the Forecast card and the list will sort from there.";
+    }, { enableHighAccuracy:false, timeout:12000, maximumAge:300000 });
   });
 
   // ---------- Status pills ----------
@@ -445,11 +674,44 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
     return null;
   }
   function getJSON(u){ return fetch(u).then(function(r){ if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }); }
+  // NWS wind chill formula (valid at 50°F or below with wind of 3 mph or more).
+  function feelsLike(t, windText){
+    var nums = String(windText || "").match(/\d+/g);
+    var v = nums ? Math.max.apply(null, nums.map(Number)) : 0;
+    if (t > 50 || v < 3) return t;
+    var p = Math.pow(v, 0.16);
+    return 35.74 + 0.6215 * t - 35.75 * p + 0.4275 * t * p;
+  }
+  // Mirrors Utah's Code Blue trigger: 18°F or colder, wind chill included, for 2+ hours in the next 24.
+  function showCodeBlue(hourly, placeName){
+    var cb = $("#cb-status");
+    if (!hourly || !hourly.length) { cb.hidden = true; return; }
+    var feels = hourly.map(function(h){ return Math.min(h.temperature, feelsLike(h.temperature, h.windSpeed)); });
+    var coldHours = feels.filter(function(f){ return f <= 18; }).length;
+    var low = Math.round(Math.min.apply(null, feels));
+    cb.textContent = "";
+    if (coldHours >= 2) {
+      cb.className = "cb-status on";
+      cb.appendChild(el("strong", null, "Code Blue conditions likely near " + placeName + "."));
+      cb.appendChild(document.createTextNode(" The forecast feels like " + low + "°F for about " + coldHours + " hours in the next day, so overflow shelters should open. The state makes the official call."));
+    } else {
+      cb.className = "cb-status off";
+      cb.appendChild(document.createTextNode("No Code Blue expected near " + placeName + " in the next 24 hours. Coldest it should feel: " + low + "°F."));
+    }
+    cb.hidden = false;
+  }
   function forecastFor(p){
     if (!state.fcCache.has(p.id)) {
       var pr = getJSON("https://api.weather.gov/points/" + p.lat.toFixed(4) + "," + p.lon.toFixed(4))
-        .then(function(pt){ return getJSON(pt.properties.forecast); })
-        .then(function(fc){ return fc.properties.periods.slice(0, 5); });
+        .then(function(pt){
+          return Promise.all([
+            getJSON(pt.properties.forecast),
+            getJSON(pt.properties.forecastHourly).catch(function(){ return null; })
+          ]);
+        })
+        .then(function(r){
+          return { periods:r[0].properties.periods.slice(0, 5), hourly:r[1] ? r[1].properties.periods.slice(0, 24) : null };
+        });
       pr.catch(function(){ state.fcCache.delete(p.id); });
       state.fcCache.set(p.id, pr);
     }
@@ -462,10 +724,16 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
     document.querySelectorAll(".chip").forEach(function(c){ c.setAttribute("aria-pressed", String(c.dataset.id === id)); });
     $("#fc-place").textContent = p.name;
     if (fly) map.flyTo([p.lat, p.lon], 10, { duration:.8 });
+    state.origin = { lat:p.lat, lon:p.lon, label:p.name }; state.warmExpanded = false;
+    $("#near-note").innerHTML = 'Sorted by distance from <strong id="warm-origin"></strong>. Your location never leaves your phone.';
+    renderWarm();
+    var cb = $("#cb-status"); cb.hidden = true;
     var box = $("#periods"); box.textContent = ""; box.appendChild(el("p","empty","Loading forecast..."));
     try {
-      var periods = await forecastFor(p);
+      var data = await forecastFor(p);
       if (state.place !== id) return;
+      var periods = data.periods;
+      showCodeBlue(data.hourly, p.name);
       box.textContent = "";
       periods.forEach(function(d){
         var row = el("div","period");
@@ -499,6 +767,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
       onChange();
     });
   }
+  bindToggle("#t-warm", "warmOn", function(){
+    if (state.warmOn) { warmLayer.addTo(map); if (state.youMarker) state.youMarker.addTo(map); }
+    else { map.removeLayer(warmLayer); if (state.youMarker) map.removeLayer(state.youMarker); }
+  });
   bindToggle("#t-radar", "radarOn", function(){
     if (!state.radarOn) { setPlaying(false); state.layers.forEach(function(l){ l.setOpacity(0); }); }
     else showFrame(state.idx);
