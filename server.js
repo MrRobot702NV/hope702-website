@@ -1,10 +1,29 @@
 const express = require('express');
 const path    = require('path');
 
+const { handleDashboard, isSignedIn } = require('./netlify/lib/dashboard-auth');
+
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-/* Serve all static files from this directory */
+/* Never serve the private dashboard files directly (they hold the dashboard
+   itself and are only sent after a server-side login), nor the old path. */
+app.use(['/private', '/dashboard.html'], (req, res) => res.status(404).send('Not found'));
+
+/* /dashboard: same server-side login as the Netlify function. */
+async function dashboard(req, res) {
+  const out = await handleDashboard({
+    method: req.method,
+    cookie: req.headers.cookie || '',
+    query: req.query || {},
+    body: typeof req.body === 'string' ? req.body : ''
+  });
+  res.status(out.status).set(out.headers).send(out.body);
+}
+app.get('/dashboard', dashboard);
+app.post('/dashboard', express.text({ type: 'application/x-www-form-urlencoded', limit: '2kb' }), dashboard);
+
+/* Serve all other static files from this directory */
 app.use(express.static(__dirname));
 
 /* ── /api/activity ──────────────────────────────────────────────────────────
@@ -28,6 +47,9 @@ function emptyActivity(note) {
 
 app.get('/api/activity', async (req, res) => {
   res.set('Cache-Control', 'no-store');
+  if (!isSignedIn(req.headers.cookie || '')) {
+    return res.status(401).json({ error: 'Sign in to the dashboard first.' });
+  }
   if (!SMS_API) return res.json(emptyActivity('HOPE702_SMS_URL is not set'));
   try {
     const r = await fetch(SMS_API + '/api/activity',
@@ -40,11 +62,6 @@ app.get('/api/activity', async (req, res) => {
     console.error('activity proxy failed:', err.message);
     res.json(emptyActivity(String(err.message || err)));
   }
-});
-
-/* /dashboard → dashboard.html (no .html extension in URL) */
-app.get('/dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
 /* /winter → winter.html */

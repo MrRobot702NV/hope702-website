@@ -171,25 +171,10 @@
 </head>
 <body>
 
-<!-- ═══ LOGIN ════════════════════════════════════════════════════════════════ -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="logo-lockup">
-      <span class="logo-hope">HOPE</span>
-      <span class="logo-badge">702</span>
-    </div>
-    <div class="login-tagline">Staff Dashboard</div>
-    <label class="login-label" for="pw-input">Password</label>
-    <input id="pw-input" class="login-input" type="password"
-           placeholder="Enter access password" autocomplete="current-password" />
-    <button class="login-btn" onclick="tryLogin()">Sign In to Dashboard</button>
-    <div class="login-error" id="login-error"></div>
-    <div class="login-auth-note">Authorized HELP of Southern Nevada staff only</div>
-  </div>
-</div>
-
-<!-- ═══ DASHBOARD ════════════════════════════════════════════════════════════ -->
-<div id="dashboard">
+<!-- ═══ DASHBOARD ════════════════════════════════════════════════════════════
+     This file is only ever sent after a correct login, checked on the server
+     (netlify/lib/dashboard-auth.js). It holds no password. -->
+<div id="dashboard" class="visible">
 
   <header class="hdr">
     <div class="hdr-left">
@@ -508,29 +493,15 @@ function applyModeChrome() {
 }
 
 /* ── Auth ────────────────────────────────────────────────────────────────── */
-document.getElementById('pw-input').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') tryLogin();
-});
-function tryLogin() {
-  var inp = document.getElementById('pw-input');
-  var err = document.getElementById('login-error');
-  if (inp.value === 'hope702miguel') {
-    document.getElementById('login-screen').style.display = 'none';
-    var dash = document.getElementById('dashboard');
-    dash.classList.add('visible');
-    if (!dash._built) { dash._built = true; initDashboard(); }
-  } else {
-    inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
-    err.textContent = 'Incorrect password.';
-    setTimeout(function() { inp.classList.remove('shake'); }, 400);
-  }
-}
+/* Sign-in happens on the server; this page is only sent to signed-in staff.
+   Signing out clears the session cookie and returns to the login page. */
 function logout() {
-  document.getElementById('dashboard').classList.remove('visible');
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('pw-input').value = '';
-  document.getElementById('login-error').textContent = '';
+  window.location.href = '/dashboard?logout';
 }
+document.addEventListener('DOMContentLoaded', function() {
+  var dash = document.getElementById('dashboard');
+  if (!dash._built) { dash._built = true; initDashboard(); }
+});
 
 /* ── Filter ──────────────────────────────────────────────────────────────── */
 function setFilter(key, btn) {
@@ -835,10 +806,9 @@ function buildCatChart() {
 </script>
 
 <!-- ═══ SITE FOOTER ══════════════════════════════════════════════════════════
-     Deliberately outside #login-screen AND #dashboard. #dashboard is
-     display:none until sign-in, so a link placed inside it would be hidden
-     from crawlers and from anyone who is not signed-in staff. Out here it is
-     in the static HTML on every render of this page. -->
+     Kept outside #dashboard so it sits at the bottom of the page. The login
+     page (private/login.html) carries the same footer, so the support link
+     shows for everyone, signed in or not. -->
 <footer class="site-footer">
   <div>© 2026 HOPE 702 · hope702.org</div>
   <a class="footer-support"

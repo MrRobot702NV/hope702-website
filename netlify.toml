@@ -2,6 +2,32 @@
   publish = "."
   functions = "netlify/functions"
 
+# The dashboard and its login page live in /private and are bundled with the
+# functions; they are only sent by netlify/functions/dashboard.js.
+[functions]
+  included_files = ["private/**"]
+
+# Staff dashboard: the password is checked server-side against the
+# DASHBOARD_PASSWORD environment variable before the page is sent.
+[[redirects]]
+  from = "/dashboard"
+  to   = "/.netlify/functions/dashboard"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/dashboard.html"
+  to   = "/dashboard"
+  status = 301
+  force = true
+
+# publish = "." makes every repo file public, so never serve /private directly.
+[[redirects]]
+  from = "/private/*"
+  to   = "/not-found"
+  status = 404
+  force = true
+
 [[redirects]]
   from = "/api/create-payment-intent"
   to   = "/.netlify/functions/create-payment-intent"

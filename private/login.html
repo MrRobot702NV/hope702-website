@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>HOPE 702 — Staff Dashboard</title>
+  <!-- Served by netlify/functions/dashboard.js. The password is checked on the
+       server against DASHBOARD_PASSWORD and is never in this page. -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #1B2A4A;
+      --bg-dark:  #141F38;
+      --bg-light: #243456;
+      --gold:     #E5A100;
+      --gold-lt:  #F5C842;
+      --gold-dim: #C48A00;
+      --muted:    #8E9BB5;
+      --border:   rgba(255,255,255,0.1);
+      --text:     #E8EDF5;
+      --text-dim: #B8C4D8;
+    }
+
+    body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,-apple-system,sans-serif; min-height:100vh; line-height:1.5; }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background:var(--bg-light); border-radius:3px; }
+
+    /* ── LOGIN ──────────────────────────────────────────────────────── */
+    /* Leaves room for the site footer below, so the login view still fills the
+       viewport exactly instead of introducing a ~60px scroll. */
+    #login-screen { display:flex; align-items:center; justify-content:center; min-height:calc(100vh - 60px); background:radial-gradient(ellipse at 50% 40%, #1E3160 0%, var(--bg-dark) 70%); }
+    .login-card { background:var(--bg-light); border:1px solid var(--border); border-radius:20px; padding:52px 44px 44px; width:380px; text-align:center; box-shadow:0 32px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(229,161,0,0.08); }
+    .logo-lockup { display:inline-flex; align-items:center; gap:10px; margin-bottom:10px; }
+    .logo-hope   { font-size:2.4rem; font-weight:800; color:#fff; letter-spacing:0.06em; }
+    .logo-badge  { background:var(--gold); color:var(--bg-dark); font-size:1.15rem; font-weight:900; padding:5px 13px; border-radius:9px; letter-spacing:0.04em; }
+    .login-tagline { color:var(--muted); font-size:0.75rem; letter-spacing:2.5px; text-transform:uppercase; margin-bottom:38px; }
+    .login-label   { display:block; text-align:left; font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; }
+    .login-input   { width:100%; background:var(--bg-dark); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:1rem; padding:13px 16px; outline:none; transition:border-color 0.2s,box-shadow 0.2s; margin-bottom:16px; }
+    .login-input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(229,161,0,0.15); }
+    .login-input.shake { border-color:#EF4444; animation:shake 0.32s ease; }
+    .login-btn { width:100%; background:var(--gold); border:none; border-radius:10px; color:var(--bg-dark); font-size:1rem; font-weight:800; padding:15px; cursor:pointer; letter-spacing:0.5px; transition:background 0.2s,transform 0.1s,box-shadow 0.2s; box-shadow:0 4px 20px rgba(229,161,0,0.4); }
+    .login-btn:hover  { background:var(--gold-lt); transform:translateY(-1px); box-shadow:0 8px 28px rgba(229,161,0,0.5); }
+    .login-btn:active { transform:translateY(0); }
+    .login-error    { color:#EF4444; font-size:0.78rem; margin-top:10px; min-height:18px; }
+    .login-auth-note { margin-top:20px; font-size:0.72rem; color:var(--muted); line-height:1.6; }
+    @keyframes shake {
+      0%,100% { transform:translateX(0); } 18% { transform:translateX(-7px); }
+      54%      { transform:translateX(7px);  } 72% { transform:translateX(-4px); }
+    }
+
+    /* ── SITE FOOTER ─────────────────────────────────────────────────── */
+    .site-footer { background:var(--bg-dark); border-top:1px solid var(--border); padding:17px 32px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; font-size:0.78rem; color:var(--muted); }
+    .footer-support { display:inline-block; padding:7px 16px; border:1px solid var(--gold); border-radius:6px; color:var(--gold); font-size:0.8rem; font-weight:700; text-decoration:none; transition:background 0.2s,color 0.2s; }
+    .footer-support:hover { background:var(--gold); color:var(--bg-dark); }
+    .login-card form { margin:0; }
+    @media (max-width:440px) { .login-card { width:calc(100vw - 32px); padding:40px 24px 32px; } }
+  </style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="logo-lockup">
+      <span class="logo-hope">HOPE</span>
+      <span class="logo-badge">702</span>
+    </div>
+    <div class="login-tagline">Staff Dashboard</div>
+    <form method="post" action="/dashboard">
+      <label class="login-label" for="pw-input">Password</label>
+      <input id="pw-input" name="password" class="login-input" type="password"
+             placeholder="Enter access password" autocomplete="current-password" required autofocus />
+      <button class="login-btn" type="submit">Sign In to Dashboard</button>
+    </form>
+    <div class="login-error" id="login-error" role="alert"><!--LOGIN_MESSAGE--></div>
+    <div class="login-auth-note">Authorized HELP of Southern Nevada staff only</div>
+  </div>
+</div>
+
+<script>
+  /* Shake the field when the server says the password was wrong. */
+  (function () {
+    var err = document.getElementById('login-error');
+    var inp = document.getElementById('pw-input');
+    if (err && err.textContent.trim() === 'Incorrect password.') {
+      inp.classList.add('shake');
+      setTimeout(function () { inp.classList.remove('shake'); }, 400);
+    }
+  })();
+</script>
+
+<footer class="site-footer">
+  <div>© 2026 HOPE 702 · hope702.org</div>
+  <a class="footer-support"
+     href="https://www.gofundme.com/f/hope-702-free-sms-lifeline-for-las-vegas-homeless"
+     target="_blank" rel="noopener">Support HOPE 702</a>
+</footer>
+
+</body>
+</html>

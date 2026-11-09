@@ -23,9 +23,17 @@ const JSON_HEADERS = {
   'Cache-Control': 'no-store'
 };
 
+const { isSignedIn } = require('../lib/dashboard-auth');
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'GET') {
     return { statusCode: 405, headers: JSON_HEADERS, body: 'Method Not Allowed' };
+  }
+
+  /* Only signed-in dashboard staff get the feed (same session cookie). */
+  const h = event.headers || {};
+  if (!isSignedIn(h.cookie || h.Cookie || '')) {
+    return { statusCode: 401, headers: JSON_HEADERS, body: JSON.stringify({ error: 'Sign in to the dashboard first.' }) };
   }
 
   const base = (process.env.HOPE702_SMS_URL || '').replace(/\/+$/, '');
