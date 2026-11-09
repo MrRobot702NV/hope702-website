@@ -320,6 +320,7 @@ var ZIP_DATA = [
   { zip:'89030', nbhd:'North Las Vegas',    lat:36.213, lng:-115.131 },
   { zip:'89031', nbhd:'N Las Vegas N',      lat:36.255, lng:-115.117 },
   { zip:'89032', nbhd:'N Las Vegas W',      lat:36.214, lng:-115.160 },
+  { zip:'89081', nbhd:'N Las Vegas E',      lat:36.262, lng:-115.105 },
   { zip:'89014', nbhd:'Green Valley',       lat:36.042, lng:-115.060 },
   { zip:'89015', nbhd:'Henderson',          lat:36.044, lng:-115.022 },
   { zip:'89052', nbhd:'Henderson North',    lat:36.005, lng:-115.103 },
@@ -348,16 +349,16 @@ var RURAL_DATA = ZIP_DATA.filter(function(d) { return  RURAL_SET[d.zip]; });
 var MOBILE_PET_ORGS = ['Street Dogz', 'Vegas Dog Rescue', 'PALNV'];
 
 /* ── Resource counts from HOPE 702 database ──────────────────────────────────
-   Generated from the "HOPE 702 Resource Database" Google Sheet (129 rows with
-   a ZIP; 4 rows without one are excluded). Sheet "Category" values map to
+   Generated from the "HOPE 702 Resource Database" Google Sheet on Nov 9, 2026
+   (137 rows with a ZIP; 4 rows without one are excluded). Sheet "Category" values map to
    chart keys with EXACT strings, case included:
      'SHELTER' → shelters   'FOOD' → food
      'COOL' + 'Library' → cooling   'PET' → pets                              */
 var CAT_DATA = {
-  '89101': { shelters:3, food:5, cooling:2, pets:2 },
+  '89101': { shelters:4, food:5, cooling:2, pets:2 },
   '89106': { shelters:3, food:2, cooling:1, pets:0 },
   '89102': { shelters:0, food:2, cooling:1, pets:0 },
-  '89104': { shelters:2, food:3, cooling:0, pets:0 },
+  '89104': { shelters:4, food:3, cooling:0, pets:0 },
   '89108': { shelters:0, food:4, cooling:0, pets:0 },
   '89107': { shelters:1, food:1, cooling:0, pets:0 },
   '89109': { shelters:0, food:0, cooling:0, pets:0 },
@@ -365,7 +366,7 @@ var CAT_DATA = {
   '89110': { shelters:0, food:0, cooling:1, pets:0 },
   '89103': { shelters:0, food:1, cooling:1, pets:0 },
   '89115': { shelters:0, food:3, cooling:1, pets:0 },
-  '89121': { shelters:2, food:4, cooling:0, pets:1 },
+  '89121': { shelters:1, food:4, cooling:0, pets:1 },
   '89118': { shelters:0, food:1, cooling:0, pets:2 },
   '89120': { shelters:1, food:3, cooling:0, pets:0 },
   '89123': { shelters:0, food:0, cooling:1, pets:0 },
@@ -387,9 +388,10 @@ var CAT_DATA = {
   '89130': { shelters:0, food:2, cooling:0, pets:1 },
   '89131': { shelters:0, food:1, cooling:1, pets:0 },
   '89142': { shelters:0, food:0, cooling:1, pets:0 },
-  '89030': { shelters:0, food:5, cooling:2, pets:1 },
+  '89030': { shelters:2, food:5, cooling:2, pets:1 },
   '89031': { shelters:0, food:0, cooling:0, pets:0 },
   '89032': { shelters:0, food:7, cooling:3, pets:0 },
+  '89081': { shelters:0, food:0, cooling:1, pets:0 },
   '89014': { shelters:0, food:1, cooling:1, pets:0 },
   '89015': { shelters:1, food:4, cooling:2, pets:0 },
   '89052': { shelters:0, food:0, cooling:0, pets:0 },
@@ -403,11 +405,11 @@ var CAT_DATA = {
   '89025': { shelters:0, food:0, cooling:1, pets:0 },
   '89040': { shelters:0, food:0, cooling:1, pets:0 },
   '89007': { shelters:0, food:0, cooling:1, pets:0 },
-  '89027': { shelters:0, food:0, cooling:1, pets:0 },
+  '89027': { shelters:0, food:0, cooling:2, pets:0 },
   '89046': { shelters:0, food:0, cooling:1, pets:0 },
-  '89005': { shelters:0, food:3, cooling:0, pets:0 },
+  '89005': { shelters:0, food:3, cooling:1, pets:0 },
   '89019': { shelters:0, food:0, cooling:2, pets:0 },
-  '89029': { shelters:0, food:1, cooling:2, pets:0 }
+  '89029': { shelters:0, food:1, cooling:3, pets:0 }
 };
 
 var CATS = [
