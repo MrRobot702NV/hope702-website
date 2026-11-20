@@ -24,6 +24,7 @@ const JSON_HEADERS = {
 };
 
 const { isSignedIn } = require('../lib/dashboard-auth');
+const { smsBase, smsHeaders } = require('../lib/sms-api');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'GET') {
@@ -36,7 +37,7 @@ exports.handler = async (event) => {
     return { statusCode: 401, headers: JSON_HEADERS, body: JSON.stringify({ error: 'Sign in to the dashboard first.' }) };
   }
 
-  const base = (process.env.HOPE702_SMS_URL || '').replace(/\/+$/, '');
+  const base = smsBase();
   if (!base) {
     return {
       statusCode: 200, headers: JSON_HEADERS,
@@ -46,7 +47,7 @@ exports.handler = async (event) => {
 
   try {
     const r = await fetch(base + '/api/activity',
-                          { signal: AbortSignal.timeout(8000) });
+                          { headers: smsHeaders(), signal: AbortSignal.timeout(8000) });
     if (!r.ok) throw new Error('upstream ' + r.status);
     /* Pass the upstream payload straight through. It is already aggregates
        only — no rows, no digests — so there is nothing to strip here. */

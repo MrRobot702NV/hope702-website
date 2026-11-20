@@ -39,3 +39,9 @@
   from = "/api/activity"
   to   = "/.netlify/functions/activity"
   status = 200
+
+# Dashboard "Update text line" button: makes the SMS service re-read the sheet.
+[[redirects]]
+  from = "/api/reload"
+  to   = "/.netlify/functions/reload"
+  status = 200
