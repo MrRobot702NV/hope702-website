@@ -91,7 +91,11 @@ const PAGE_HEADERS = {
   'Cache-Control': 'no-store, private',
   'X-Robots-Tag': 'noindex, nofollow',
   'X-Frame-Options': 'DENY',
-  'Referrer-Policy': 'same-origin'
+  /* Cross-origin requests carry only the origin (https://hope702.org/), never
+     the path or query. Must NOT be same-origin/no-referrer: OpenStreetMap's
+     tile servers block tile requests that arrive without a Referer, which
+     blanks the dashboard map. */
+  'Referrer-Policy': 'strict-origin-when-cross-origin'
 };
 
 function parseForm(body) {

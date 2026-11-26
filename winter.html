@@ -378,6 +378,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,.
   var map = L.map("map", { minZoom:6, maxZoom:12, zoomControl:true }).setView(HOME.center, HOME.zoom);
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom:19, className:"base-tiles",
+    referrerPolicy:"strict-origin-when-cross-origin", // OSM blocks tiles with no Referer
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
   map.attributionControl.addAttribution('Radar <a href="https://www.rainviewer.com/">RainViewer</a> · Alerts &amp; forecasts <a href="https://www.weather.gov/">NWS</a>');

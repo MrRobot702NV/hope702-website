@@ -671,11 +671,15 @@ function buildMap() {
   /* Keyless OpenStreetMap tiles, darkened with a CSS filter (.base-tiles).
      CARTO began watermarking keyless raster tiles in Aug 2026 and is retiring
      that service, so the dashboard no longer depends on it. Same approach as
-     winter.html. */
+     winter.html.
+     OSM requires a Referer on every tile request (osm.wiki/Blocked), so the
+     tile images set their own referrer policy rather than relying on the
+     page header. */
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     className: 'base-tiles',
-    maxZoom: 19
+    maxZoom: 19,
+    referrerPolicy: 'strict-origin-when-cross-origin'
   }).addTo(map);
 
   /* "Metro view" reset — flies back to the default valley framing. */
